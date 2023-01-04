@@ -45,18 +45,25 @@ public class LoggerClient : ILoggerClient
 
     private async Task CreateAsync(string level, string template, IEnumerable<object> args, Exception? exception = null)
     {
-        var request = new RestRequest("Logs/create");
-        request.AddJsonBody(new LogDto
+        try
         {
-            Project = project,
-            Service = service,
-            LogLevel = level,
-            Template = template,
-            Params = args.Select(x => x == null ? "" : x.ToString()!).ToArray(),
-            Exception = exception
-        });
-        var response = await restClient.ExecutePostAsync(request);
-        response.ThrowIfNotSuccessful();
+            var request = new RestRequest("Logs/create");
+            request.AddJsonBody(new LogDto
+            {
+                Project = project,
+                Service = service,
+                LogLevel = level,
+                Template = template,
+                Params = args.Select(x => x == null ? "" : x.ToString()!).ToArray(),
+                Exception = exception
+            });
+            var response = await restClient.ExecutePostAsync(request);
+            response.ThrowIfNotSuccessful();
+        }
+        catch
+        {
+            // just prevent other apps from dying if telemetry api is dead
+        }
     }
 
     private readonly RestClient restClient;

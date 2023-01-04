@@ -15,18 +15,25 @@ public class ApiTelemetryClient : IApiTelemetryClient
 
     public async Task CreateAsync(string method, string route, int statusCode, long executionTime)
     {
-        var request = new RestRequest("ApiTelemetry/create");
-        request.AddJsonBody(new ApiTelemetryDto
+        try
         {
-            Project = project,
-            Service = service,
-            Method = method,
-            Route = route,
-            StatusCode = statusCode,
-            ExecutionTime = executionTime
-        });
-        var response = await restClient.ExecutePostAsync(request);
-        response.ThrowIfNotSuccessful();
+            var request = new RestRequest("ApiTelemetry/create");
+            request.AddJsonBody(new ApiTelemetryDto
+            {
+                Project = project,
+                Service = service,
+                Method = method,
+                Route = route,
+                StatusCode = statusCode,
+                ExecutionTime = executionTime
+            });
+            var response = await restClient.ExecutePostAsync(request);
+            response.ThrowIfNotSuccessful();
+        }
+        catch
+        {
+            // just prevent other apps from dying if telemetry api is dead
+        }
     }
     
     private readonly RestClient restClient;

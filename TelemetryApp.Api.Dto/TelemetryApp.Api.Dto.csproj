@@ -4,6 +4,11 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <PackageId>Xdd.TelemetryApp.Api.Dto</PackageId>
+        <Title>TelemetryApp.Api.Dto</Title>
+        <Authors>hortari</Authors>
+        <Version>$(VersionSuffix)</Version>
+        <Description>Dto for TelemetryApp.Api.Client</Description>
     </PropertyGroup>
 
 </Project>

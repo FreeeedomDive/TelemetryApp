@@ -1,10 +1,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using RestSharp;
 using TelemetryApp.Api.Client.ApiTelemetry;
-using TelemetryApp.Api.Client.Configuration;
 using TelemetryApp.Api.Client.Log;
+using TelemetryApp.Utilities.Configuration;
 
-namespace TelemetryApp.Api.Client.Extensions;
+namespace TelemetryApp.Utilities.Extensions;
 
 public static class ServiceCollectionExtensions
 {
@@ -20,8 +20,8 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection ConfigureApiTelemetryClient(this IServiceCollection services, string project, string service)
     {
         var restClient = BuildRestClient();
-        var loggerClient = new ApiTelemetryClient(restClient, project, service);
-        services.AddSingleton<IApiTelemetryClient>(loggerClient);
+        var apiTelemetryClient = new ApiTelemetryClient(restClient, project, service);
+        services.AddSingleton<IApiTelemetryClient>(apiTelemetryClient);
 
         return services;
     }

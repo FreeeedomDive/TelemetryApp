@@ -8,15 +8,17 @@
         <Title>TelemetryApp.Utilities</Title>
         <Authors>hortari</Authors>
         <Version>$(VersionSuffix)</Version>
-        <Description>Middlewares for ASP.NET services with telemetry clients usages</Description>
+        <Description>Middlewares for ASP.NET and DI configurators for IServiceCollection and Ninject</Description>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\TelemetryApp.Api.Client\TelemetryApp.Api.Client.csproj" />
+        <ProjectReference Include="..\TelemetryApp.Api.Client\TelemetryApp.Api.Client.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+        <PackageReference Include="Ninject" Version="3.3.6" />
     </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 using RestSharp;
 
-namespace TelemetryApp.Api.Client.Configuration;
+namespace TelemetryApp.Utilities.Configuration;
 
 internal static class RestClientBuilder
 {

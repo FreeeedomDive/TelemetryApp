@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <PackageId>Xdd.TelemetryApp.Api.Utilities</PackageId>
+        <Title>TelemetryApp.Utilities</Title>
+        <Authors>hortari</Authors>
+        <Version>$(VersionSuffix)</Version>
+        <Description>Middlewares for ASP.NET services with telemetry clients usages</Description>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\TelemetryApp.Api.Client\TelemetryApp.Api.Client.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+    </ItemGroup>
+
+</Project>

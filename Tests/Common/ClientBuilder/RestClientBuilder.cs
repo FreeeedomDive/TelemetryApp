@@ -1,8 +1,8 @@
 using RestSharp;
 
-namespace TelemetryApp.Utilities.Configuration;
+namespace Common.ClientBuilder;
 
-internal static class RestClientBuilder
+public static class RestClientBuilder
 {
     public static RestClient BuildRestClient(string url, bool validateSsl = true)
     {
@@ -15,10 +15,5 @@ internal static class RestClientBuilder
             restClientOptions.RemoteCertificateValidationCallback = (_, _, _, _) => true;
         }
         return new RestClient(restClientOptions);
-    }
-
-    public static RestClient BuildRestClient(string? customUrl = null)
-    {
-        return RestClientBuilder.BuildRestClient(customUrl ?? "https://localhost:6651", false);
     }
 }

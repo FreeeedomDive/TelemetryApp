@@ -62,6 +62,7 @@ public class LogRepository : ILogRepository
     {
         return new LogStorageElement
         {
+            Id = Guid.NewGuid(),
             Project = dto.Project,
             Service = dto.Service,
             LogLevel = dto.LogLevel,

@@ -1,4 +1,4 @@
-namespace TelemetryApp.Api.Client.ApiTelemetryClient;
+namespace TelemetryApp.Api.Client.ApiTelemetry;
 
 public interface IApiTelemetryClient
 {

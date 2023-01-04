@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Http;
-using TelemetryApp.Api.Client.ApiTelemetryClient;
+using TelemetryApp.Api.Client.ApiTelemetry;
 using TelemetryApp.Api.Client.Log;
 
 namespace TelemetryApp.Utilities.Middlewares;

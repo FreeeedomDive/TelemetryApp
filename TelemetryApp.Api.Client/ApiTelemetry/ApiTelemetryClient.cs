@@ -2,11 +2,10 @@ using RestSharp;
 using TelemetryApp.Api.Client.Extensions;
 using TelemetryApp.Api.Dto.ApiTelemetry;
 
-namespace TelemetryApp.Api.Client.ApiTelemetryClient;
+namespace TelemetryApp.Api.Client.ApiTelemetry;
 
 public class ApiTelemetryClient : IApiTelemetryClient
 {
-
     public ApiTelemetryClient(RestClient restClient, string project, string service)
     {
         this.restClient = restClient;

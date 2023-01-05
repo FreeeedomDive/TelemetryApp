@@ -67,8 +67,8 @@ public class LogRepository : ILogRepository
             Service = dto.Service,
             LogLevel = dto.LogLevel,
             Template = dto.Template,
-            Params = JsonConvert.SerializeObject(dto.Params),
-            Exception = JsonConvert.SerializeObject(dto.Exception),
+            Params = JsonConvert.SerializeObject(dto.Params, Formatting.Indented),
+            Exception = JsonConvert.SerializeObject(dto.Exception, Formatting.Indented),
             DateTime = DateTime.UtcNow
         };
     }

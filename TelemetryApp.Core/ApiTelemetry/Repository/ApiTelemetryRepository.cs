@@ -78,7 +78,7 @@ public class ApiTelemetryRepository : IApiTelemetryRepository
             Service = dto.Service,
             Method = dto.Method,
             Route = dto.RoutePattern,
-            RouteValues = JsonConvert.SerializeObject(dto.RouteParametersValues),
+            RouteValues = JsonConvert.SerializeObject(dto.RouteParametersValues, Formatting.Indented),
             StatusCode = dto.StatusCode,
             ExecutionTime = dto.ExecutionTime,
             DateTime = DateTime.UtcNow

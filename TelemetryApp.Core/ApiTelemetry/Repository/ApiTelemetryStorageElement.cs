@@ -12,6 +12,7 @@ public class ApiTelemetryStorageElement : SqlStorageElement
     [Key] public string Service { get; set; }
     public string Method { get; set; }
     public string Route { get; set; }
+    public string RouteValues { get; set; }
     public int StatusCode { get; set; }
     public long ExecutionTime { get; set; }
     public DateTime DateTime { get; set; }

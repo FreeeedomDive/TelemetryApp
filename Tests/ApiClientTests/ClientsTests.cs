@@ -16,7 +16,7 @@ public class ClientsTests
     //[Test]
     public async Task TestApiTelemetryClient()
     {
-        await apiTelemetryClient.CreateAsync("GET", "/", 200, 228);
+        await apiTelemetryClient.CreateAsync("GET", "/", new Dictionary<string, string>(), 200, 228);
     }
 
     //[Test]

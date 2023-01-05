@@ -61,7 +61,7 @@ public class ApiTelemetryRepository : IApiTelemetryRepository
             Service = storageElement.Service,
             Method = storageElement.Method,
             Route = storageElement.Route,
-            RouteValues = JsonConvert.DeserializeObject<Dictionary<string, string>>(storageElement.RouteValues)!,
+            RouteParametersValues = JsonConvert.DeserializeObject<Dictionary<string, string>>(storageElement.RouteValues)!,
             StatusCode = storageElement.StatusCode,
             ExecutionTime = storageElement.ExecutionTime,
             DateTime = storageElement.DateTime
@@ -70,7 +70,7 @@ public class ApiTelemetryRepository : IApiTelemetryRepository
 
     private static ApiTelemetryStorageElement ToStorageElement(ApiTelemetryDto dto)
     {
-        dto.RouteValues ??= new Dictionary<string, string>();
+        dto.RouteParametersValues ??= new Dictionary<string, string>();
         return new ApiTelemetryStorageElement
         {
             Id = Guid.NewGuid(),
@@ -78,7 +78,7 @@ public class ApiTelemetryRepository : IApiTelemetryRepository
             Service = dto.Service,
             Method = dto.Method,
             Route = dto.RoutePattern ?? dto.Route,
-            RouteValues = JsonConvert.SerializeObject(dto.RouteValues),
+            RouteValues = JsonConvert.SerializeObject(dto.RouteParametersValues),
             StatusCode = dto.StatusCode,
             ExecutionTime = dto.ExecutionTime,
             DateTime = DateTime.UtcNow

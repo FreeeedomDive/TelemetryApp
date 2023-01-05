@@ -13,7 +13,7 @@ public class ApiTelemetryClient : IApiTelemetryClient
         this.service = service;
     }
 
-    public async Task CreateAsync(string method, string route, int statusCode, long executionTime)
+    public async Task CreateAsync(string method, string routePattern, Dictionary<string, string> routeValues, int statusCode, long executionTime)
     {
         try
         {
@@ -23,7 +23,8 @@ public class ApiTelemetryClient : IApiTelemetryClient
                 Project = project,
                 Service = service,
                 Method = method,
-                Route = route,
+                RoutePattern = routePattern,
+                RouteParametersValues = routeValues,
                 StatusCode = statusCode,
                 ExecutionTime = executionTime
             });

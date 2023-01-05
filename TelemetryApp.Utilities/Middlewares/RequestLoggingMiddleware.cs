@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using TelemetryApp.Api.Client.ApiTelemetry;
 using TelemetryApp.Api.Client.Log;
+using TelemetryApp.Utilities.Filters;
 
 namespace TelemetryApp.Utilities.Middlewares;
 
@@ -13,7 +14,7 @@ public class RequestLoggingMiddleware
         this.next = next;
     }
 
-    public async Task Invoke(HttpContext context, IApiTelemetryClient apiTelemetryClient, ILoggerClient loggerClient)
+    public async Task Invoke(HttpContext context, IApiTelemetryClient apiTelemetryClient, ILoggerClient loggerClient, TelemetryFilter filters)
     {
         var stopwatch = new Stopwatch();
         try
@@ -27,25 +28,24 @@ public class RequestLoggingMiddleware
         }
         finally
         {
-            await apiTelemetryClient.CreateAsync(
-                context.Request?.Method ?? "",
-                GetRoutePattern(context),
-                GetRouteParams(context),
-                context.Response?.StatusCode ?? 0,
-                stopwatch.ElapsedMilliseconds
-            );
+            var method = context.Request?.Method ?? "";
+            var route = GetRoutePattern(context) ?? "";
+            var routeParams = GetRouteParams(context);
+            var statusCode = context.Response?.StatusCode ?? 0;
+            var elapsed = stopwatch.ElapsedMilliseconds;
+            if (!filters.Filter(method, route))
+            {
+                await apiTelemetryClient.CreateAsync(method, route, routeParams, statusCode, elapsed);
+            }
         }
     }
 
-    private static string GetRoutePattern(HttpContext context)
+    private static string? GetRoutePattern(HttpContext context)
     {
         var endpoint = context.GetEndpoint();
-        if (endpoint is not RouteEndpoint routeEndpoint)
-        {
-            return context.Request?.Path.Value ?? "";
-        }
-
-        return routeEndpoint.RoutePattern.RawText ?? "";
+        return endpoint is not RouteEndpoint routeEndpoint
+            ? context.Request?.Path.Value
+            : routeEndpoint.RoutePattern.RawText;
     }
 
     private static Dictionary<string, string> GetRouteParams(HttpContext context)

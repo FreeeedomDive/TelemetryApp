@@ -17,22 +17,20 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection ConfigureApiTelemetryClient(this IServiceCollection services, string project, string service)
+    public static IServiceCollection ConfigureApiTelemetryClient(this IServiceCollection services, string project, string service, Action<TelemetryFilter>? configureTelemetryFilters = null)
     {
         var restClient = RestClientBuilder.BuildRestClient();
         var apiTelemetryClient = new ApiTelemetryClient(restClient, project, service);
         services.AddSingleton<IApiTelemetryClient>(apiTelemetryClient);
-
-        return services;
-    }
-
-    public static IServiceCollection ConfigureApiTelemetryFilters(this IServiceCollection services, Action<TelemetryFilter> configureFilters)
-    {
-        var filter = new TelemetryFilter();
-        configureFilters(filter);
         
-        filter.ValidateRestrictions();
-        filter.BuildFilters();
+        var filter = new TelemetryFilter();
+        if (configureTelemetryFilters != null)
+        {
+            configureTelemetryFilters(filter);
+        
+            filter.ValidateRestrictions();
+            filter.BuildFilters();
+        }
 
         services.AddSingleton(filter);
 

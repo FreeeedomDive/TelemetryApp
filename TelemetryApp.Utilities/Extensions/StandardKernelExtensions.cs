@@ -8,31 +8,32 @@ namespace TelemetryApp.Utilities.Extensions;
 
 public static class StandardKernelExtensions
 {
-    public static StandardKernel ConfigureLoggerClient(this StandardKernel ninjectKernel, string project, string service)
+    public static StandardKernel ConfigureTelemetryClientWithLogger(
+        this StandardKernel ninjectKernel,
+        string project,
+        string service,
+        string? serviceUrl = null,
+        Action<TelemetryFilter>? configureTelemetryFilters = null
+    )
     {
-        var restClient = RestClientBuilder.BuildRestClient();
+        // configure logger
+        var restClient = RestClientBuilder.BuildRestClient(serviceUrl);
         var loggerClient = new LoggerClient(restClient, project, service);
         ninjectKernel.Bind<ILoggerClient>().ToConstant(loggerClient);
-
-        return ninjectKernel;
-    }
-
-    public static StandardKernel ConfigureApiTelemetryClient(this StandardKernel ninjectKernel, string project, string service)
-    {
-        var restClient = RestClientBuilder.BuildRestClient();
+        
+        // configure telemetry client
         var apiTelemetryClient = new ApiTelemetryClient(restClient, project, service);
         ninjectKernel.Bind<IApiTelemetryClient>().ToConstant(apiTelemetryClient);
-
-        return ninjectKernel;
-    }
-
-    public static StandardKernel ConfigureApiTelemetryFilters(this StandardKernel ninjectKernel, Action<TelemetryFilter> configureFilters)
-    {
-        var filter = new TelemetryFilter();
-        configureFilters(filter);
         
-        filter.ValidateRestrictions();
-        filter.BuildFilters();
+        // configure telemetry filters
+        var filter = new TelemetryFilter();
+        if (configureTelemetryFilters != null)
+        {
+            configureTelemetryFilters(filter);
+
+            filter.ValidateRestrictions();
+            filter.BuildFilters();
+        }
 
         ninjectKernel.Bind<TelemetryFilter>().ToConstant(filter);
 

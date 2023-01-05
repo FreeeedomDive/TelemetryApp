@@ -8,26 +8,29 @@ namespace TelemetryApp.Utilities.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection ConfigureLoggerClient(this IServiceCollection services, string project, string service)
+    public static IServiceCollection ConfigureTelemetryClientWithLogger(
+        this IServiceCollection services,
+        string project,
+        string service,
+        string? serviceUrl = null,
+        Action<TelemetryFilter>? configureTelemetryFilters = null
+    )
     {
-        var restClient = RestClientBuilder.BuildRestClient();
+        // configure logger
+        var restClient = RestClientBuilder.BuildRestClient(serviceUrl);
         var loggerClient = new LoggerClient(restClient, project, service);
         services.AddSingleton<ILoggerClient>(loggerClient);
 
-        return services;
-    }
-
-    public static IServiceCollection ConfigureApiTelemetryClient(this IServiceCollection services, string project, string service, Action<TelemetryFilter>? configureTelemetryFilters = null)
-    {
-        var restClient = RestClientBuilder.BuildRestClient();
+        // configure telemetry client
         var apiTelemetryClient = new ApiTelemetryClient(restClient, project, service);
         services.AddSingleton<IApiTelemetryClient>(apiTelemetryClient);
-        
+
+        // configure telemetry filters
         var filter = new TelemetryFilter();
         if (configureTelemetryFilters != null)
         {
             configureTelemetryFilters(filter);
-        
+
             filter.ValidateRestrictions();
             filter.BuildFilters();
         }

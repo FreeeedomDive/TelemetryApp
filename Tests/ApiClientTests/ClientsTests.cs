@@ -22,9 +22,39 @@ public class ClientsTests
     }
 
     [Test]
-    public async Task TestLoggerClient()
+    public async Task TestLoggerDebug()
+    {
+        await loggerClient.DebugAsync("Test {a} {b} {c}", 1, 2, 3);
+    }
+
+    [Test]
+    public async Task TestLoggerInfo()
     {
         await loggerClient.InfoAsync("Test {a} {b} {c}", 1, 2, 3);
+    }
+    
+    [Test]
+    public async Task TestLoggerWarn()
+    {
+        await loggerClient.WarnAsync("Test {a} {b} {c}", 1, 2, 3);
+    }
+    
+    [Test]
+    public async Task TestLoggerWarnWithException()
+    {
+        await loggerClient.WarnAsync(new Exception(Guid.NewGuid().ToString()), "Test {a} {b} {c}", 1, 2, 3);
+    }
+    
+    [Test]
+    public async Task TestLoggerError()
+    {
+        await loggerClient.ErrorAsync("Test {a} {b} {c}", 1, 2, 3);
+    }
+    
+    [Test]
+    public async Task TestLoggerErrorWithException()
+    {
+        await loggerClient.ErrorAsync(new Exception(Guid.NewGuid().ToString()), "Test {a} {b} {c}", 1, 2, 3);
     }
 
     private string project = "";

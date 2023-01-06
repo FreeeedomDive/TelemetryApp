@@ -53,7 +53,7 @@ public class LogRepository : ILogRepository
             LogLevel = storageElement.LogLevel,
             Template = storageElement.Template,
             Params = JsonConvert.DeserializeObject<string[]>(storageElement.Params)!,
-            Exception = JsonConvert.DeserializeObject<Exception>(storageElement.Exception)!,
+            Exception = storageElement.Exception,
             DateTime = storageElement.DateTime
         };
     }
@@ -68,7 +68,7 @@ public class LogRepository : ILogRepository
             LogLevel = dto.LogLevel,
             Template = dto.Template,
             Params = JsonConvert.SerializeObject(dto.Params, Formatting.Indented),
-            Exception = JsonConvert.SerializeObject(dto.Exception, Formatting.Indented),
+            Exception = dto.Exception,
             DateTime = DateTime.UtcNow
         };
     }

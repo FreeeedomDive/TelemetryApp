@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using RestSharp;
 using TelemetryApp.Api.Client.Extensions;
 using TelemetryApp.Api.Dto.Logs;
@@ -55,7 +56,7 @@ public class LoggerClient : BaseClient, ILoggerClient
                 LogLevel = level,
                 Template = template,
                 Params = args.Select(x => x == null ? "" : x.ToString()!).ToArray(),
-                Exception = exception
+                Exception = exception == null ? "" : JsonConvert.SerializeObject(exception, Formatting.Indented)
             });
             var response = await restClient.ExecutePostAsync(request);
             response.ThrowIfNotSuccessful();

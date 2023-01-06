@@ -7,6 +7,6 @@ public class LogDto
     public string LogLevel { get; set; }
     public string Template { get; set; }
     public string[] Params { get; set; }
-    public Exception? Exception { get; set; }
+    public string Exception { get; set; }
     public DateTime DateTime { get; set; }
 }

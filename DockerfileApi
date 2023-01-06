@@ -1,0 +1,27 @@
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+WORKDIR /app
+
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /certificate
+RUN dotnet dev-certs https --clean
+RUN dotnet dev-certs https -ep ./https/certificate.pfx -p aspnet
+RUN dotnet dev-certs https --trust
+
+WORKDIR /src
+COPY ["TelemetryApp.Api/TelemetryApp.Api.csproj", "TelemetryApp.Api/"]
+COPY ["TelemetryApp.Api.Dto/TelemetryApp.Api.Dto.csproj", "TelemetryApp.Api.Dto/"]
+COPY ["TelemetryApp.Core/TelemetryApp.Core.csproj", "TelemetryApp.Core/"]
+RUN dotnet restore "TelemetryApp.Api/TelemetryApp.Api.csproj"
+COPY . .
+WORKDIR "/src/TelemetryApp.Api"
+RUN dotnet build "TelemetryApp.Api.csproj" -c Release -o /app/build
+
+FROM build AS publish
+WORKDIR "/src/TelemetryApp.Api"
+RUN dotnet publish "TelemetryApp.Api.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=build /certificate /certificate
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "TelemetryApp.Api.dll"]

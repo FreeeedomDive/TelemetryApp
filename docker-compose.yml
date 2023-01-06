@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  TelemetryApp.Api:
+    image: telemetryappapi
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/certificate/https/certificate.pfx
+      - ASPNETCORE_KESTREL__Certificates__Default__Password=aspnet
+    build:
+      dockerfile: DockerfileApi
+    ports:
+      - "6651:6651"
+
+networks:
+  default:
+    name: TelemetryAppNetwork

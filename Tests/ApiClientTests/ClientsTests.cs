@@ -9,21 +9,26 @@ public class ClientsTests
     [SetUp]
     public void Setup()
     {
-        apiTelemetryClient = ApiTelemetryClientBuilder.Build();
-        loggerClient = LoggerClientBuilder.Build();
+        project = Guid.NewGuid().ToString();
+        service = Guid.NewGuid().ToString();
+        apiTelemetryClient = ApiTelemetryClientBuilder.Build(project, service);
+        loggerClient = LoggerClientBuilder.Build(project, service);
     }
 
-    //[Test]
+    [Test]
     public async Task TestApiTelemetryClient()
     {
         await apiTelemetryClient.CreateAsync("GET", "/", new Dictionary<string, string>(), 200, 228);
     }
 
-    //[Test]
+    [Test]
     public async Task TestLoggerClient()
     {
         await loggerClient.InfoAsync("Test {a} {b} {c}", 1, 2, 3);
     }
+
+    private string project = "";
+    private string service = "";
 
     private IApiTelemetryClient apiTelemetryClient;
     private ILoggerClient loggerClient;

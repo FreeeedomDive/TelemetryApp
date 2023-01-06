@@ -4,9 +4,8 @@ namespace Common.ClientBuilder;
 
 public class LoggerClientBuilder
 {
-    public static ILoggerClient Build()
+    public static ILoggerClient Build(string project, string service)
     {
-        return new LoggerClient(RestClientBuilder.BuildRestClient("https://localhost:6651"), "Tests", "Tests");
+        return new LoggerClient(RestClientBuilder.BuildRestClient("https://localhost:22222"), project, service);
     }
-    
 }

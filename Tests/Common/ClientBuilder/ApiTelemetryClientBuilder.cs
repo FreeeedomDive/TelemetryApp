@@ -6,6 +6,6 @@ public static class ApiTelemetryClientBuilder
 {
     public static IApiTelemetryClient Build(string project, string service)
     {
-        return new ApiTelemetryClient(RestClientBuilder.BuildRestClient("https://localhost:22222"), project, service);
+        return new ApiTelemetryClient(RestClientBuilder.BuildRestClient("https://localhost:22222"), project, service, false);
     }
 }

@@ -4,9 +4,9 @@ using TelemetryApp.Api.Dto.ApiTelemetry;
 
 namespace TelemetryApp.Api.Client.ApiTelemetry;
 
-public class ApiTelemetryClient : IApiTelemetryClient
+public class ApiTelemetryClient : BaseClient, IApiTelemetryClient
 {
-    public ApiTelemetryClient(RestClient restClient, string project, string service)
+    public ApiTelemetryClient(RestClient restClient, string project, string service, bool exceptionsSafe = true) : base(exceptionsSafe)
     {
         this.restClient = restClient;
         this.project = project;
@@ -15,7 +15,7 @@ public class ApiTelemetryClient : IApiTelemetryClient
 
     public async Task CreateAsync(string method, string routePattern, Dictionary<string, string> routeValues, int statusCode, long executionTime)
     {
-        try
+        await PerformRequestAsync(async () =>
         {
             var request = new RestRequest("ApiTelemetry/create");
             request.AddJsonBody(new ApiTelemetryDto
@@ -30,11 +30,7 @@ public class ApiTelemetryClient : IApiTelemetryClient
             });
             var response = await restClient.ExecutePostAsync(request);
             response.ThrowIfNotSuccessful();
-        }
-        catch
-        {
-            // just prevent other apps from dying if telemetry api is dead
-        }
+        });
     }
     
     private readonly RestClient restClient;

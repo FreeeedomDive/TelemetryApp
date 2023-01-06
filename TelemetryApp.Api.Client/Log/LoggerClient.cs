@@ -4,9 +4,9 @@ using TelemetryApp.Api.Dto.Logs;
 
 namespace TelemetryApp.Api.Client.Log;
 
-public class LoggerClient : ILoggerClient
+public class LoggerClient : BaseClient, ILoggerClient
 {
-    public LoggerClient(RestClient restClient, string project, string service)
+    public LoggerClient(RestClient restClient, string project, string service, bool exceptionsSafe = true) : base(exceptionsSafe)
     {
         this.restClient = restClient;
         this.project = project;
@@ -45,7 +45,7 @@ public class LoggerClient : ILoggerClient
 
     private async Task CreateAsync(string level, string template, IEnumerable<object> args, Exception? exception = null)
     {
-        try
+        await PerformRequestAsync(async () =>
         {
             var request = new RestRequest("Logs/create");
             request.AddJsonBody(new LogDto
@@ -59,11 +59,7 @@ public class LoggerClient : ILoggerClient
             });
             var response = await restClient.ExecutePostAsync(request);
             response.ThrowIfNotSuccessful();
-        }
-        catch
-        {
-            // just prevent other apps from dying if telemetry api is dead
-        }
+        });
     }
 
     private readonly RestClient restClient;

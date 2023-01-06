@@ -5,6 +5,7 @@ services:
     image: telemetryappapi
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=https://+:6651
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/certificate/https/certificate.pfx
       - ASPNETCORE_KESTREL__Certificates__Default__Password=aspnet
     build:

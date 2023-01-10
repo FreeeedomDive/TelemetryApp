@@ -25,7 +25,7 @@ public class LogRepository : ILogRepository
         var result = await sqlRepository
             .BuildCustomQuery()
             .Where(expression)
-            .OrderBy(x => x.DateTime)
+            .OrderByDescending(x => x.DateTime)
             .ToArrayAsync();
 
         return result.Select(ToModel).ToArray();

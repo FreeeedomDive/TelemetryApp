@@ -70,7 +70,6 @@ public class ApiTelemetryRepository : IApiTelemetryRepository
 
     private static ApiTelemetryStorageElement ToStorageElement(ApiTelemetryDto dto)
     {
-        dto.RouteParametersValues ??= new Dictionary<string, string>();
         return new ApiTelemetryStorageElement
         {
             Id = Guid.NewGuid(),
@@ -81,7 +80,7 @@ public class ApiTelemetryRepository : IApiTelemetryRepository
             RouteValues = JsonConvert.SerializeObject(dto.RouteParametersValues, Formatting.Indented),
             StatusCode = dto.StatusCode,
             ExecutionTime = dto.ExecutionTime,
-            DateTime = DateTime.UtcNow
+            DateTime = dto.DateTime ?? DateTime.UtcNow
         };
     }
 

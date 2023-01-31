@@ -9,5 +9,5 @@ public class ApiTelemetryDto
     public Dictionary<string, string> RouteParametersValues { get; set; }
     public int StatusCode { get; set; }
     public long ExecutionTime { get; set; }
-    public DateTime DateTime { get; set; }
+    public DateTime? DateTime { get; set; }
 }

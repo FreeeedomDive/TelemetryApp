@@ -39,8 +39,10 @@ public class LogRepository : ILogRepository
             && (string.IsNullOrEmpty(filter.LogLevel) || x.LogLevel == filter.LogLevel)
             && (string.IsNullOrEmpty(filter.Template) || x.Template == filter.Template)
             && (filter.DateTimeRange == null
-                || (filter.DateTimeRange.From == null || filter.DateTimeRange.From <= x.DateTime)
-                || (filter.DateTimeRange.To == null || x.DateTime <= filter.DateTimeRange.To)
+                || (
+                    (filter.DateTimeRange.From == null || filter.DateTimeRange.From <= x.DateTime)
+                    && (filter.DateTimeRange.To == null || x.DateTime <= filter.DateTimeRange.To)
+                )
             );
     }
 

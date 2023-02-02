@@ -12,6 +12,11 @@ services:
       dockerfile: DockerfileApi
     ports:
       - "6651:6651"
+  
+  TelemetryApp.DockerMonitoring.TelegramBot:
+    image: telemetryappdockermonitoringtelegrambot
+    build:
+      dockerfile: DockerfileDockerMonitoringTelegramBot
 
 networks:
   default:

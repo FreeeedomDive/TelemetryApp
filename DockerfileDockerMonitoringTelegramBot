@@ -5,6 +5,7 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["TelemetryApp.Api.Client/TelemetryApp.Api.Client.csproj", "TelemetryApp.Api.Client/"]
 COPY ["TelemetryApp.Utilities/TelemetryApp.Utilities.csproj", "TelemetryApp.Utilities/"]
+COPY ["TelemetryApp.DockerMonitoring.TelegramBot/TelemetryApp.DockerMonitoring.TelegramBot.csproj", "TelemetryApp.DockerMonitoring.TelegramBot/"]
 RUN dotnet restore "TelemetryApp.DockerMonitoring.TelegramBot/TelemetryApp.DockerMonitoring.TelegramBot.csproj"
 COPY . .
 WORKDIR "/src/TelemetryApp.DockerMonitoring.TelegramBot"

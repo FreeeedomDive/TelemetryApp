@@ -70,8 +70,14 @@ public class TelegramMessagesWorker : IWorker
                         },
                         cancellationToken
                     );
-                    var messages = containers.Select(container => $"{container.Names.First()} is {container.Status}");
-                    var content = string.Join("\n", messages);
+                    var groups = containers
+                        .GroupBy(container => container.Names.First()[1..].Split('-')[0]);
+                    var applications = groups
+                        .Select(group =>
+                            $"{group.Key}\n{group.Select(container => $"\t{container.Names.First()[1..].Split('-')[1]}")}")
+                        .ToArray();
+
+                    var content = string.Join("\n", applications);
                     await SendMessage(chatId, content);
                     break;
                 }

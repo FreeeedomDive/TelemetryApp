@@ -1,5 +1,6 @@
 using Docker.DotNet;
 using Docker.DotNet.Models;
+using Newtonsoft.Json;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using TelemetryApp.Api.Client.Log;
@@ -29,6 +30,7 @@ public class EventsMonitoringWorker : IWorker
         var progress = new Progress<Message>();
         progress.ProgressChanged += async (sender, dockerMessage) =>
         {
+            Console.WriteLine($"Received event\n{JsonConvert.SerializeObject(dockerMessage)}");
             if (dockerMessage.Type.ToLower() != "container")
             {
                 return;

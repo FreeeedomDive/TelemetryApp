@@ -4,7 +4,7 @@ namespace TelemetryApp.Utilities.Configuration;
 
 internal static class RestClientBuilder
 {
-    public static RestClient BuildRestClient(string url, bool validateSsl = true)
+    private static RestClient BuildRestClient(string url, bool validateSsl = true)
     {
         var restClientOptions = new RestClientOptions
         {

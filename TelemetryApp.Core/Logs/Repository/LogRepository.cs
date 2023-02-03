@@ -71,7 +71,7 @@ public class LogRepository : ILogRepository
             Template = dto.Template,
             Params = JsonConvert.SerializeObject(dto.Params, Formatting.Indented),
             Exception = dto.Exception,
-            DateTime = DateTime.UtcNow
+            DateTime = dto.DateTime ?? DateTime.UtcNow
         };
     }
 

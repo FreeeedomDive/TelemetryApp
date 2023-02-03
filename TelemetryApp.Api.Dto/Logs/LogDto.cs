@@ -8,5 +8,5 @@ public class LogDto
     public string Template { get; set; }
     public string[] Params { get; set; }
     public string Exception { get; set; }
-    public DateTime DateTime { get; set; }
+    public DateTime? DateTime { get; set; }
 }

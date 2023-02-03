@@ -93,7 +93,7 @@ public class TelegramMessagesWorker : IWorker
     {
         var app = group.Key;
         var containerNames = group
-            .Select(container => $"\t{container.Names.First()[1..].Split('-')[1]} - {container.Status}")
+            .Select(container => $"    {container.Names.First()[1..].Split('-')[1]}  -  {container.Status}")
             .ToArray();
         return $"{app}\n{string.Join("\n", containerNames)}";
     }

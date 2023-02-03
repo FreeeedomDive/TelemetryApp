@@ -1,6 +1,4 @@
-﻿using FromLogsToSentryExceptionsConverter.Tools;
-
-namespace FromLogsToSentryExceptionsConverter;
+﻿namespace FromLogsToSentryExceptionsConverter;
 
 public class Program
 {

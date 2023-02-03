@@ -21,8 +21,4 @@
       <ProjectReference Include="..\TelemetryApp.Sentry\TelemetryApp.Sentry.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Migrations" />
-    </ItemGroup>
-
 </Project>

@@ -1,9 +1,7 @@
-using Newtonsoft.Json;
 using TelemetryApp.Api.Dto.Logs;
 using TelemetryApp.Api.Dto.Logs.Filter;
 using TelemetryApp.Core.Logs.Repository;
 using TelemetryApp.Core.ProjectServices.Repository;
-using TelemetryApp.Sentry;
 using TelemetryApp.Sentry.Service;
 
 namespace TelemetryApp.Core.Logs.Service;
@@ -34,10 +32,8 @@ public class LogService : ILogService
         await logRepository.CreateAsync(logDto);
 
         if (string.IsNullOrEmpty(logDto.Exception)) return;
-        var exception = JsonConvert.DeserializeObject<Exception>(logDto.Exception);
-        if (exception == null) return;
 
-        exceptionEventsSentryService.CaptureException(exception);
+        exceptionEventsSentryService.CaptureException(logDto);
     }
 
     public async Task<LogDto[]> FindAsync(LogFilterDto filter)

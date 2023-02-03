@@ -73,8 +73,7 @@ public class TelegramMessagesWorker : IWorker
                     var groups = containers
                         .GroupBy(container => container.Names.First()[1..].Split('-')[0]);
                     var applications = groups
-                        .Select(group =>
-                            $"{group.Key}\n{group.Select(container => $"\t{container.Names.First()[1..].Split('-')[1]}")}")
+                        .Select(BuildApplicationContainersOutput)
                         .ToArray();
 
                     var content = string.Join("\n", applications);
@@ -88,6 +87,15 @@ public class TelegramMessagesWorker : IWorker
             await logger.ErrorAsync(e, "Exception in message handler");
             await SendMessage(chatId, $"Error\n{e.Message}");
         }
+    }
+
+    private static string BuildApplicationContainersOutput(IGrouping<string, ContainerListResponse> group)
+    {
+        var app = group.Key;
+        var containerNames = group
+            .Select(container => $"\t{container.Names.First()[1..].Split('-')[1]} - {container.Status}")
+            .ToArray();
+        return $"{app}\n{string.Join("\n", containerNames)}";
     }
 
     private async Task SendMessage(long chatId, string message)

@@ -6,3 +6,4 @@ riderModule.iml
 /_ReSharper.Caches/
 TelemetryApp.Api/appsettings.Production.json
 *.user
+Tools/Tools/Tools/ConvertExceptionsFromLogsToSentryTool.cs

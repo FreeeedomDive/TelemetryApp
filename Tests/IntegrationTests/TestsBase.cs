@@ -1,3 +1,4 @@
+using Common.Mocks;
 using NUnit.Framework;
 using SqlRepositoryBase.Core.Repository;
 using TelemetryApp.Core.ApiTelemetry.Repository;
@@ -25,7 +26,7 @@ public class TestsBase
         var apiSqlRepository = new SqlRepository<ApiTelemetryStorageElement>(databaseContext);
         var apiRepository = new ApiTelemetryRepository(apiSqlRepository);
 
-        LogService = new LogService(ProjectServiceRepository, logsRepository);
+        LogService = new LogService(ProjectServiceRepository, logsRepository, new ExceptionEventsSentryServiceMock());
         ApiTelemetryService = new ApiTelemetryService(ProjectServiceRepository, apiRepository);
 
         ProjectName = Guid.NewGuid().ToString();

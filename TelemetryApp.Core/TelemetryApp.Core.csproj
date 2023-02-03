@@ -18,6 +18,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\TelemetryApp.Api.Dto\TelemetryApp.Api.Dto.csproj" />
+      <ProjectReference Include="..\TelemetryApp.Sentry\TelemetryApp.Sentry.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Sentry;
 using SqlRepositoryBase.Configuration.Extensions;
 using TelemetryApp.Core.ApiTelemetry.Repository;
 using TelemetryApp.Core.ApiTelemetry.Service;
@@ -6,6 +7,9 @@ using TelemetryApp.Core.Database;
 using TelemetryApp.Core.Logs.Repository;
 using TelemetryApp.Core.Logs.Service;
 using TelemetryApp.Core.ProjectServices.Repository;
+using TelemetryApp.Sentry;
+using TelemetryApp.Sentry.Service;
+using TelemetryApp.Sentry.Settings;
 
 namespace TelemetryApp.Api;
 
@@ -31,9 +35,17 @@ public class Startup
         services.AddTransient<IApiTelemetryRepository, ApiTelemetryRepository>();
         services.AddTransient<ILogRepository, LogRepository>();
 
+        var sentryConfigurationSection = Configuration.GetSection("Sentry");
+        var sentrySettings = new SentrySettings
+        {
+            Dsn = sentryConfigurationSection.GetValue<string>("Dsn")
+        };
+        services.AddSingleton<ISentrySettings>(sentrySettings);
+        services.AddTransient<IExceptionEventsSentryService, ExceptionEventsSentryService>();
+
         services.AddTransient<IApiTelemetryService, ApiTelemetryService>();
         services.AddTransient<ILogService, LogService>();
-        
+
         services.AddCors(options =>
         {
             options.AddPolicy(CorsConfigurationName,

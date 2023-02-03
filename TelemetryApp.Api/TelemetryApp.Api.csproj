@@ -17,6 +17,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\TelemetryApp.Core\TelemetryApp.Core.csproj" />
+      <ProjectReference Include="..\TelemetryApp.Sentry\TelemetryApp.Sentry.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,6 +1,3 @@
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
-WORKDIR /app
-
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["TelemetryApp.Api.Client/TelemetryApp.Api.Client.csproj", "TelemetryApp.Api.Client/"]
@@ -8,13 +5,12 @@ COPY ["TelemetryApp.Utilities/TelemetryApp.Utilities.csproj", "TelemetryApp.Util
 COPY ["TelemetryApp.DockerMonitoring.TelegramBot/TelemetryApp.DockerMonitoring.TelegramBot.csproj", "TelemetryApp.DockerMonitoring.TelegramBot/"]
 RUN dotnet restore "TelemetryApp.DockerMonitoring.TelegramBot/TelemetryApp.DockerMonitoring.TelegramBot.csproj"
 COPY . .
-WORKDIR "/src/TelemetryApp.DockerMonitoring.TelegramBot"
-RUN dotnet build "TelemetryApp.DockerMonitoring.TelegramBot.csproj" -c Release -o /app/build
 
 FROM build AS publish
+WORKDIR "/src/TelemetryApp.DockerMonitoring.TelegramBot"
 RUN dotnet publish "TelemetryApp.DockerMonitoring.TelegramBot.csproj" -c Release -o /app/publish
 
-FROM base AS final
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "TelemetryApp.DockerMonitoring.TelegramBot.dll"]

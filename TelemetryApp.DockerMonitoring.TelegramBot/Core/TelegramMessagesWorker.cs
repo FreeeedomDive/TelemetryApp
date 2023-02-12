@@ -78,7 +78,7 @@ public class TelegramMessagesWorker : IWorker
                         .Where(container => !container.Names.First().StartsWith("/k8s"));
                     var newKubernetesContainers = containers
                         .Where(container => container.Names.First().StartsWith("/k8s"));
-                    var applications = otherContainers.Select(c => c.Names.First()[1..])
+                    var applications = BuildCommonApplicationContainersOutput(otherContainers)
                         .Concat(BuildComposeApplicationContainersOutput(oldComposeContainers))
                         .Concat(BuildKubernetesApplicationContainersOutput(newKubernetesContainers))
                         .ToArray();
@@ -94,6 +94,12 @@ public class TelegramMessagesWorker : IWorker
             await logger.ErrorAsync(e, "Exception in message handler");
             await SendMessage(chatId, $"Error\n{e.Message}");
         }
+    }
+
+    private static IEnumerable<string> BuildCommonApplicationContainersOutput(
+        IEnumerable<ContainerListResponse> containers)
+    {
+        return containers.Select(c => $"{c.Names.First()[1..]}  -  {c.Status}");
     }
 
     private static IEnumerable<string> BuildComposeApplicationContainersOutput(
@@ -124,7 +130,7 @@ public class TelegramMessagesWorker : IWorker
                 var app = group.Key;
                 var containerNames = group
                     .Select(container =>
-                        $"    {container.Names.First().Split('_')[2].Split('-')[0]}  -  {container.Status}")
+                        $"    {container.Names.First().Split('_')[2].Split('-')[1]}  -  {container.Status}")
                     .ToArray();
                 return $"{app}\n{string.Join("\n", containerNames)}";
             })

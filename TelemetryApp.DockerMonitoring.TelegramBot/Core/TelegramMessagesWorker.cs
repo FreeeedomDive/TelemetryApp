@@ -63,17 +63,27 @@ public class TelegramMessagesWorker : IWorker
                     return;
                 case "/status":
                 {
-                    var containers = await dockerClient.Containers.ListContainersAsync(
+                    var containers = (await dockerClient.Containers.ListContainersAsync(
                         new ContainersListParameters
                         {
                             All = true
                         },
                         cancellationToken
-                    );
-                    var groups = containers
-                        .GroupBy(container => container.Names.First()[1..].Split('-')[0]);
-                    var applications = groups
-                        .Select(BuildApplicationContainersOutput)
+                    )).ToArray();
+                    var otherContainers = containers
+                        .Where(container => container.Names.First().Split('-', '_').Length == 1)
+                        .ToArray();
+                    containers = containers.Except(otherContainers).ToArray();
+                    var oldComposeContainers = containers
+                        .Where(container => !container.Names.First().StartsWith("/k8s"));
+                    var newKubernetesContainers = containers
+                        .Where(container => container.Names.First().StartsWith("/k8s"));
+                    var applications = new[] {"===== Common ====="}
+                        .Concat(BuildCommonApplicationContainersOutput(otherContainers))
+                        .Concat(new[] {"===== Docker Compose ====="})
+                        .Concat(BuildComposeApplicationContainersOutput(oldComposeContainers))
+                        .Concat(new[] {"===== Kubernetes Cluster ====="})
+                        .Concat(BuildKubernetesApplicationContainersOutput(newKubernetesContainers))
                         .ToArray();
 
                     var content = string.Join("\n", applications);
@@ -89,13 +99,45 @@ public class TelegramMessagesWorker : IWorker
         }
     }
 
-    private static string BuildApplicationContainersOutput(IGrouping<string, ContainerListResponse> group)
+    private static IEnumerable<string> BuildCommonApplicationContainersOutput(
+        IEnumerable<ContainerListResponse> containers)
     {
-        var app = group.Key;
-        var containerNames = group
-            .Select(container => $"    {container.Names.First()[1..].Split('-')[1]}  -  {container.Status}")
+        return containers.Select(c => $"{c.Names.First()[1..]}  -  {c.Status}");
+    }
+
+    private static IEnumerable<string> BuildComposeApplicationContainersOutput(
+        IEnumerable<ContainerListResponse> containers)
+    {
+        var groups = containers
+            .GroupBy(container => container.Names.First()[1..].Split('-')[0]);
+        return groups
+            .Select(group =>
+            {
+                var app = group.Key;
+                var containerNames = group
+                    .Select(container => $"    {container.Names.First()[1..].Split('-')[1]}  -  {container.Status}")
+                    .ToArray();
+                return $"{app}\n{string.Join("\n", containerNames)}";
+            })
             .ToArray();
-        return $"{app}\n{string.Join("\n", containerNames)}";
+    }
+
+    private static IEnumerable<string> BuildKubernetesApplicationContainersOutput(
+        IEnumerable<ContainerListResponse> containers)
+    {
+        var groups = containers
+            .GroupBy(container => container.Names.First().Split('_')[2].Split('-')[0]);
+        return groups
+            .Select(group =>
+            {
+                var app = group.Key;
+                var containerNames = group
+                    .Select(container =>
+                        $"    {container.Names.First().Split('_')[2].Split('-')[1]}  -  {container.Status}")
+                    .ToArray();
+                return $"{app}\n{string.Join("\n", containerNames)}";
+            })
+            .ToArray();
     }
 
     private async Task SendMessage(long chatId, string message)

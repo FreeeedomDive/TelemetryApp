@@ -71,7 +71,7 @@ public class TelegramMessagesWorker : IWorker
                         cancellationToken
                     );
                     var oldComposeContainers = containers
-                        .Where(container => container.Names.First().StartsWith("/"));
+                        .Where(container => !container.Names.First().StartsWith("k8s"));
                     var newKubernetesContainers = containers
                         .Where(container => container.Names.First().StartsWith("k8s"))
                         .Where(container => !container.Names.First().StartsWith("k8s_POD"));

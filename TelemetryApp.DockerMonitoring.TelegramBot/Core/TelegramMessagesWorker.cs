@@ -70,18 +70,12 @@ public class TelegramMessagesWorker : IWorker
                         },
                         cancellationToken
                     );
+                    await logger.DebugAsync(string.Join("\n", containers.Select(c => c.Names.First())));
                     var oldComposeContainers = containers
-                        .Where(container => !container.Names.First().StartsWith("k8s"))
-                        .ToArray();
+                        .Where(container => !container.Names.First().StartsWith("k8s"));
                     var newKubernetesContainers = containers
                         .Where(container => container.Names.First().StartsWith("k8s"))
-                        .Where(container => !container.Names.First().StartsWith("k8s_POD"))
-                        .ToArray();
-                    await logger.DebugAsync("Total {1} containers, compose {2}, k8s {3}",
-                        containers.Count,
-                        oldComposeContainers.Length,
-                        newKubernetesContainers.Length
-                    );
+                        .Where(container => !container.Names.First().StartsWith("k8s_POD"));
                     var applications = BuildComposeApplicationContainersOutput(oldComposeContainers)
                         .Concat(BuildKubernetesApplicationContainersOutput(newKubernetesContainers))
                         .ToArray();

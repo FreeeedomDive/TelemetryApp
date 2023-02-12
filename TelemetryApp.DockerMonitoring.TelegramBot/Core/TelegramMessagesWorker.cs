@@ -78,8 +78,11 @@ public class TelegramMessagesWorker : IWorker
                         .Where(container => !container.Names.First().StartsWith("/k8s"));
                     var newKubernetesContainers = containers
                         .Where(container => container.Names.First().StartsWith("/k8s"));
-                    var applications = BuildCommonApplicationContainersOutput(otherContainers)
+                    var applications = new[] {"===== Common ====="}
+                        .Concat(BuildCommonApplicationContainersOutput(otherContainers))
+                        .Concat(new[] {"===== Docker Compose ====="})
                         .Concat(BuildComposeApplicationContainersOutput(oldComposeContainers))
+                        .Concat(new[] {"===== Kubernetes Cluster ====="})
                         .Concat(BuildKubernetesApplicationContainersOutput(newKubernetesContainers))
                         .ToArray();
 

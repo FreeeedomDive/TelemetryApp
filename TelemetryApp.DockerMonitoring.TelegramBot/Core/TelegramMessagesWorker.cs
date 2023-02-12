@@ -63,20 +63,23 @@ public class TelegramMessagesWorker : IWorker
                     return;
                 case "/status":
                 {
-                    var containers = await dockerClient.Containers.ListContainersAsync(
+                    var containers = (await dockerClient.Containers.ListContainersAsync(
                         new ContainersListParameters
                         {
                             All = true
                         },
                         cancellationToken
-                    );
-                    await logger.DebugAsync(string.Join("\n", containers.Select(c => c.Names.First())));
+                    )).ToArray();
+                    var otherContainers = containers
+                        .Where(container => container.Names.First().Split('-', '_').Length == 1)
+                        .ToArray();
+                    containers = containers.Except(otherContainers).ToArray();
                     var oldComposeContainers = containers
-                        .Where(container => !container.Names.First().StartsWith("k8s"));
+                        .Where(container => !container.Names.First().StartsWith("/k8s"));
                     var newKubernetesContainers = containers
-                        .Where(container => container.Names.First().StartsWith("k8s"))
-                        .Where(container => !container.Names.First().StartsWith("k8s_POD"));
-                    var applications = BuildComposeApplicationContainersOutput(oldComposeContainers)
+                        .Where(container => container.Names.First().StartsWith("/k8s"));
+                    var applications = otherContainers.Select(c => c.Names.First()[1..])
+                        .Concat(BuildComposeApplicationContainersOutput(oldComposeContainers))
                         .Concat(BuildKubernetesApplicationContainersOutput(newKubernetesContainers))
                         .ToArray();
 

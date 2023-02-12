@@ -70,10 +70,13 @@ public class TelegramMessagesWorker : IWorker
                         },
                         cancellationToken
                     );
-                    var groups = containers
-                        .GroupBy(container => container.Names.First()[1..].Split('-')[0]);
-                    var applications = groups
-                        .Select(BuildApplicationContainersOutput)
+                    var oldComposeContainers = containers
+                        .Where(container => container.Names.First().StartsWith("/"));
+                    var newKubernetesContainers = containers
+                        .Where(container => container.Names.First().StartsWith("k8s"))
+                        .Where(container => !container.Names.First().StartsWith("k8s_POD"));
+                    var applications = BuildComposeApplicationContainersOutput(oldComposeContainers)
+                        .Concat(BuildKubernetesApplicationContainersOutput(newKubernetesContainers))
                         .ToArray();
 
                     var content = string.Join("\n", applications);
@@ -89,13 +92,39 @@ public class TelegramMessagesWorker : IWorker
         }
     }
 
-    private static string BuildApplicationContainersOutput(IGrouping<string, ContainerListResponse> group)
+    private static IEnumerable<string> BuildComposeApplicationContainersOutput(
+        IEnumerable<ContainerListResponse> containers)
     {
-        var app = group.Key;
-        var containerNames = group
-            .Select(container => $"    {container.Names.First()[1..].Split('-')[1]}  -  {container.Status}")
+        var groups = containers
+            .GroupBy(container => container.Names.First()[1..].Split('-')[0]);
+        return groups
+            .Select(group =>
+            {
+                var app = group.Key;
+                var containerNames = group
+                    .Select(container => $"    {container.Names.First()[1..].Split('-')[1]}  -  {container.Status}")
+                    .ToArray();
+                return $"{app}\n{string.Join("\n", containerNames)}";
+            })
             .ToArray();
-        return $"{app}\n{string.Join("\n", containerNames)}";
+    }
+
+    private static IEnumerable<string> BuildKubernetesApplicationContainersOutput(
+        IEnumerable<ContainerListResponse> containers)
+    {
+        var groups = containers
+            .GroupBy(container => container.Names.First().Split('_')[2].Split('-')[0]);
+        return groups
+            .Select(group =>
+            {
+                var app = group.Key;
+                var containerNames = group
+                    .Select(container =>
+                        $"    {container.Names.First().Split('_')[2].Split('-')[0]}  -  {container.Status}")
+                    .ToArray();
+                return $"{app}\n{string.Join("\n", containerNames)}";
+            })
+            .ToArray();
     }
 
     private async Task SendMessage(long chatId, string message)

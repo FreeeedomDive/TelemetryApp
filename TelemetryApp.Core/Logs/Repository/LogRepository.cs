@@ -1,6 +1,6 @@
-using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using SqlRepositoryBase.Core.Extensions;
 using SqlRepositoryBase.Core.Repository;
 using TelemetryApp.Api.Dto.Logs;
 using TelemetryApp.Api.Dto.Logs.Filter;
@@ -21,29 +21,18 @@ public class LogRepository : ILogRepository
 
     public async Task<LogDto[]> FindAsync(LogFilterDto filter)
     {
-        var expression = BuildExpression(filter);
         var result = await sqlRepository
             .BuildCustomQuery()
-            .Where(expression)
+            .WhereIf(!string.IsNullOrEmpty(filter.Project), x => x.Project == filter.Project)
+            .WhereIf(!string.IsNullOrEmpty(filter.Service), x => x.Service == filter.Service)
+            .WhereIf(!string.IsNullOrEmpty(filter.LogLevel), x => x.LogLevel == filter.LogLevel)
+            .WhereIf(!string.IsNullOrEmpty(filter.Template), x => x.Template == filter.Template)
+            .WhereIf(filter.DateTimeRange?.From != null, x => filter.DateTimeRange!.From <= x.DateTime)
+            .WhereIf(filter.DateTimeRange?.To != null, x => x.DateTime <= filter.DateTimeRange!.To)
             .OrderByDescending(x => x.DateTime)
             .ToArrayAsync();
 
         return result.Select(ToModel).ToArray();
-    }
-
-    private static Expression<Func<LogStorageElement, bool>> BuildExpression(LogFilterDto filter)
-    {
-        return x =>
-            (string.IsNullOrEmpty(filter.Project) || x.Project == filter.Project)
-            && (string.IsNullOrEmpty(filter.Service) || x.Service == filter.Service)
-            && (string.IsNullOrEmpty(filter.LogLevel) || x.LogLevel == filter.LogLevel)
-            && (string.IsNullOrEmpty(filter.Template) || x.Template == filter.Template)
-            && (filter.DateTimeRange == null
-                || (
-                    (filter.DateTimeRange.From == null || filter.DateTimeRange.From <= x.DateTime)
-                    && (filter.DateTimeRange.To == null || x.DateTime <= filter.DateTimeRange.To)
-                )
-            );
     }
 
     private static LogDto ToModel(LogStorageElement storageElement)

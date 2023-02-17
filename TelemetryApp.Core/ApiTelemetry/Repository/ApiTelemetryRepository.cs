@@ -1,6 +1,6 @@
-using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using SqlRepositoryBase.Core.Extensions;
 using SqlRepositoryBase.Core.Repository;
 using TelemetryApp.Api.Dto.ApiTelemetry;
 using TelemetryApp.Api.Dto.ApiTelemetry.Filter;
@@ -21,36 +21,21 @@ public class ApiTelemetryRepository : IApiTelemetryRepository
 
     public async Task<ApiTelemetryDto[]> FindAsync(ApiRequestInfoFilterDto filter)
     {
-        var expression = BuildExpression(filter);
         var result = await sqlRepository
             .BuildCustomQuery()
-            .Where(expression)
+            .WhereIf(!string.IsNullOrEmpty(filter.Project), x => x.Project == filter.Project)
+            .WhereIf(!string.IsNullOrEmpty(filter.Service), x => x.Service == filter.Service)
+            .WhereIf(!string.IsNullOrEmpty(filter.Method), x => x.Method == filter.Method)
+            .WhereIf(!string.IsNullOrEmpty(filter.Route), x => x.Route == filter.Route)
+            .WhereIf(filter.StatusCode != null, x => x.StatusCode == filter.StatusCode)
+            .WhereIf(filter.ExecutionTimeRange?.From != null, x => filter.ExecutionTimeRange!.From <= x.ExecutionTime)
+            .WhereIf(filter.ExecutionTimeRange?.To != null, x => x.ExecutionTime <= filter.ExecutionTimeRange!.To)
+            .WhereIf(filter.DateTimeRange?.From != null, x => filter.DateTimeRange!.From <= x.DateTime)
+            .WhereIf(filter.DateTimeRange?.To != null, x => x.DateTime <= filter.DateTimeRange!.To)
             .OrderByDescending(x => x.DateTime)
             .ToArrayAsync();
 
         return result.Select(ToModel).ToArray();
-    }
-
-    private static Expression<Func<ApiTelemetryStorageElement, bool>> BuildExpression(ApiRequestInfoFilterDto filter)
-    {
-        return x =>
-            (string.IsNullOrEmpty(filter.Project) || x.Project == filter.Project)
-            && (string.IsNullOrEmpty(filter.Service) || x.Service == filter.Service)
-            && (string.IsNullOrEmpty(filter.Method) || x.Method == filter.Method)
-            && (string.IsNullOrEmpty(filter.Route) || x.Route == filter.Route)
-            && (filter.StatusCode == null || x.StatusCode == filter.StatusCode)
-            && (filter.ExecutionTimeRange == null
-                || (
-                    (filter.ExecutionTimeRange.From == null || filter.ExecutionTimeRange.From <= x.ExecutionTime)
-                    && (filter.ExecutionTimeRange.To == null || x.ExecutionTime <= filter.ExecutionTimeRange.To)
-                )
-            )
-            && (filter.DateTimeRange == null
-                || (
-                    (filter.DateTimeRange.From == null || filter.DateTimeRange.From <= x.DateTime)
-                    && (filter.DateTimeRange.To == null || x.DateTime <= filter.DateTimeRange.To)
-                )
-            );
     }
 
     private static ApiTelemetryDto ToModel(ApiTelemetryStorageElement storageElement)

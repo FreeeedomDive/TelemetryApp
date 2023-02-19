@@ -52,3 +52,4 @@ spec:
       protocol: TCP
       port: 6651
       targetPort: 6651
+      nodePort: 30200

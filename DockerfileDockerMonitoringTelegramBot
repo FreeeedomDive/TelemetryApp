@@ -2,15 +2,15 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["TelemetryApp.Api.Client/TelemetryApp.Api.Client.csproj", "TelemetryApp.Api.Client/"]
 COPY ["TelemetryApp.Utilities/TelemetryApp.Utilities.csproj", "TelemetryApp.Utilities/"]
-COPY ["TelemetryApp.DockerMonitoring.TelegramBot/TelemetryApp.DockerMonitoring.TelegramBot.csproj", "TelemetryApp.DockerMonitoring.TelegramBot/"]
-RUN dotnet restore "TelemetryApp.DockerMonitoring.TelegramBot/TelemetryApp.DockerMonitoring.TelegramBot.csproj"
+COPY ["TelemetryApp.Alerts.TelegramBot/TelemetryApp.Alerts.TelegramBot.csproj", "TelemetryApp.Alerts.TelegramBot/"]
+RUN dotnet restore "TelemetryApp.Alerts.TelegramBot/TelemetryApp.Alerts.TelegramBot.csproj"
 COPY . .
 
 FROM build AS publish
-WORKDIR "/src/TelemetryApp.DockerMonitoring.TelegramBot"
-RUN dotnet publish "TelemetryApp.DockerMonitoring.TelegramBot.csproj" -c Release -o /app/publish
+WORKDIR "/src/TelemetryApp.Alerts.TelegramBot"
+RUN dotnet publish "TelemetryApp.Alerts.TelegramBot.csproj" -c Release -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "TelemetryApp.DockerMonitoring.TelegramBot.dll"]
+ENTRYPOINT ["dotnet", "TelemetryApp.Alerts.TelegramBot.dll"]

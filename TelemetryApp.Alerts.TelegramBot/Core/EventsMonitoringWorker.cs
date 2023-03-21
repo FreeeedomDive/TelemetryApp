@@ -6,7 +6,7 @@ using Telegram.Bot.Types;
 using TelemetryApp.Api.Client.Log;
 using Message = Docker.DotNet.Models.Message;
 
-namespace TelemetryApp.DockerMonitoring.TelegramBot.Core;
+namespace TelemetryApp.Alerts.TelegramBot.Core;
 
 public class EventsMonitoringWorker : IWorker
 {

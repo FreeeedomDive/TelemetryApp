@@ -1,10 +1,10 @@
 ﻿using Docker.DotNet;
 using Telegram.Bot;
-using TelemetryApp.DockerMonitoring.TelegramBot.Core;
-using TelemetryApp.DockerMonitoring.TelegramBot.Settings;
+using TelemetryApp.Alerts.TelegramBot.Core;
+using TelemetryApp.Alerts.TelegramBot.Settings;
 using TelemetryApp.Utilities.Configuration;
 
-namespace TelemetryApp.DockerMonitoring.TelegramBot;
+namespace TelemetryApp.Alerts.TelegramBot;
 
 public class Program
 {

@@ -22,7 +22,7 @@ public class ErrorAlertsWorker : IWorker
         this.telegramBotClient = telegramBotClient;
         this.settings = settings;
         this.cancellationTokenSource = cancellationTokenSource;
-        timer = new PeriodicTimer(TimeSpan.FromMinutes(5));
+        timer = new PeriodicTimer(TimeSpan.FromMinutes(1));
     }
 
     public Task Start()
@@ -38,6 +38,7 @@ public class ErrorAlertsWorker : IWorker
         {
             var projects = await projectsClient.ReadProjectsAsync();
             var end = DateTime.UtcNow;
+            Console.WriteLine($"Getting errors from {start} to {end}");
             var messageBuilder = new StringBuilder().Append($"Errors from {start} to {end}").AppendLine();
             foreach (var project in projects)
             {

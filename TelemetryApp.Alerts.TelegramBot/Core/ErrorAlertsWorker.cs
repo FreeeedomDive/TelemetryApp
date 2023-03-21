@@ -22,7 +22,7 @@ public class ErrorAlertsWorker : IWorker
         this.telegramBotClient = telegramBotClient;
         this.settings = settings;
         this.cancellationTokenSource = cancellationTokenSource;
-        timer = new PeriodicTimer(TimeSpan.FromMinutes(1));
+        timer = new PeriodicTimer(TimeSpan.FromMinutes(10));
     }
 
     public Task Start()

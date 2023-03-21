@@ -1,10 +1,10 @@
 ﻿using Docker.DotNet;
 using Telegram.Bot;
-using TelemetryApp.DockerMonitoring.TelegramBot.Core;
-using TelemetryApp.DockerMonitoring.TelegramBot.Settings;
+using TelemetryApp.Alerts.TelegramBot.Core;
+using TelemetryApp.Alerts.TelegramBot.Settings;
 using TelemetryApp.Utilities.Configuration;
 
-namespace TelemetryApp.DockerMonitoring.TelegramBot;
+namespace TelemetryApp.Alerts.TelegramBot;
 
 public class Program
 {
@@ -18,11 +18,14 @@ public class Program
             "DockerMonitoringTelegramBot",
             settings.TelemetryAppUrl
         );
+        var logReaderClient = ClientsBuilder.BuildLogReaderClient(settings.TelemetryAppUrl);
+        var projectsClient = ClientsBuilder.BuildProjectsClient(settings.TelemetryAppUrl);
         var cancellationTokenSource = new CancellationTokenSource();
         IWorker[] workers =
         {
             new TelegramMessagesWorker(telegramBotClient, dockerClient, loggerClient, cancellationTokenSource),
-            new EventsMonitoringWorker(telegramBotClient, dockerClient, loggerClient, settings, cancellationTokenSource)
+            // new EventsMonitoringWorker(telegramBotClient, dockerClient, loggerClient, settings, cancellationTokenSource),
+            new ErrorAlertsWorker(telegramBotClient, projectsClient, logReaderClient, settings, cancellationTokenSource)
         };
         await Task.WhenAll(workers.Select(x => x.Start()));
     }

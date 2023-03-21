@@ -26,7 +26,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "Tests\I
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TelegramDockerMonitoring", "TelegramDockerMonitoring", "{F4D6D795-0659-4005-9FE8-2A7531214F96}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelemetryApp.DockerMonitoring.TelegramBot", "TelemetryApp.DockerMonitoring.TelegramBot\TelemetryApp.DockerMonitoring.TelegramBot.csproj", "{06D72C94-2359-4421-AE4B-2E9888E8C35D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelemetryApp.Alerts.TelegramBot", "TelemetryApp.Alerts.TelegramBot\TelemetryApp.Alerts.TelegramBot.csproj", "{06D72C94-2359-4421-AE4B-2E9888E8C35D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

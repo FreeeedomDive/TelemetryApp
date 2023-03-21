@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace TelemetryApp.DockerMonitoring.TelegramBot.Settings;
+namespace TelemetryApp.Alerts.TelegramBot.Settings;
 
 public class SettingsProvider : ISettingsProvider
 {

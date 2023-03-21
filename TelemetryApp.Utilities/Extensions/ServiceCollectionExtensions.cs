@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using TelemetryApp.Api.Client.ApiTelemetry;
 using TelemetryApp.Api.Client.Log;
+using TelemetryApp.Api.Client.Projects;
 using TelemetryApp.Utilities.Configuration;
 using TelemetryApp.Utilities.Filters;
 
@@ -16,8 +17,8 @@ public static class ServiceCollectionExtensions
         Action<TelemetryFilter>? configureTelemetryFilters = null
     )
     {
-        // configure logger
         var restClient = RestClientBuilder.BuildRestClient(serviceUrl);
+        // configure logger
         var loggerClient = new LoggerClient(restClient, project, service);
         services.AddSingleton<ILoggerClient>(loggerClient);
 
@@ -36,6 +37,13 @@ public static class ServiceCollectionExtensions
         }
 
         services.AddSingleton(filter);
+        
+        // configure read clients
+        var logReaderClient = new LogReaderClient(restClient);
+        services.AddSingleton<ILogReaderClient>(logReaderClient);
+
+        var projectsReaderClient = new ProjectsClient(restClient);
+        services.AddSingleton<IProjectsClient>(projectsReaderClient);
 
         return services;
     }

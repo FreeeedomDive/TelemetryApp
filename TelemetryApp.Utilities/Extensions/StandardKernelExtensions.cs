@@ -1,6 +1,7 @@
 using Ninject;
 using TelemetryApp.Api.Client.ApiTelemetry;
 using TelemetryApp.Api.Client.Log;
+using TelemetryApp.Api.Client.Projects;
 using TelemetryApp.Utilities.Configuration;
 using TelemetryApp.Utilities.Filters;
 
@@ -16,8 +17,8 @@ public static class StandardKernelExtensions
         Action<TelemetryFilter>? configureTelemetryFilters = null
     )
     {
-        // configure logger
         var restClient = RestClientBuilder.BuildRestClient(serviceUrl);
+        // configure logger
         var loggerClient = new LoggerClient(restClient, project, service);
         ninjectKernel.Bind<ILoggerClient>().ToConstant(loggerClient);
         
@@ -36,6 +37,13 @@ public static class StandardKernelExtensions
         }
 
         ninjectKernel.Bind<TelemetryFilter>().ToConstant(filter);
+        
+        // configure read clients
+        var logReaderClient = new LogReaderClient(restClient);
+        ninjectKernel.Bind<ILogReaderClient>().ToConstant(logReaderClient);
+
+        var projectsReaderClient = new ProjectsClient(restClient);
+        ninjectKernel.Bind<IProjectsClient>().ToConstant(projectsReaderClient);
 
         return ninjectKernel;
     }

@@ -1,4 +1,4 @@
-namespace TelemetryApp.DockerMonitoring.TelegramBot.Settings;
+namespace TelemetryApp.Alerts.TelegramBot.Settings;
 
 public class Settings
 {

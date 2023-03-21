@@ -6,7 +6,7 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using TelemetryApp.Api.Client.Log;
 
-namespace TelemetryApp.DockerMonitoring.TelegramBot.Core;
+namespace TelemetryApp.Alerts.TelegramBot.Core;
 
 public class TelegramMessagesWorker : IWorker
 {

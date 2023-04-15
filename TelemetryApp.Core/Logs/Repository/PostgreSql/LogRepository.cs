@@ -5,7 +5,7 @@ using SqlRepositoryBase.Core.Repository;
 using TelemetryApp.Api.Dto.Logs;
 using TelemetryApp.Api.Dto.Logs.Filter;
 
-namespace TelemetryApp.Core.Logs.Repository;
+namespace TelemetryApp.Core.Logs.Repository.PostgreSql;
 
 public class LogRepository : ILogRepository
 {

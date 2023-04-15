@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using TelemetryApp.Core.ApiTelemetry.Repository;
 using TelemetryApp.Core.Logs.Repository;
+using TelemetryApp.Core.Logs.Repository.PostgreSql;
 using TelemetryApp.Core.ProjectServices.Repository;
 
 namespace TelemetryApp.Core.Database;

@@ -5,11 +5,11 @@ using SqlRepositoryBase.Core.Repository;
 using TelemetryApp.Api.Dto.ApiTelemetry;
 using TelemetryApp.Api.Dto.ApiTelemetry.Filter;
 
-namespace TelemetryApp.Core.ApiTelemetry.Repository;
+namespace TelemetryApp.Core.ApiTelemetry.Repository.PostgreSql;
 
-public class ApiTelemetryRepository : IApiTelemetryRepository
+public class SqlApiTelemetryRepository : IApiTelemetryRepository
 {
-    public ApiTelemetryRepository(ISqlRepository<ApiTelemetryStorageElement> sqlRepository)
+    public SqlApiTelemetryRepository(ISqlRepository<ApiTelemetryStorageElement> sqlRepository)
     {
         this.sqlRepository = sqlRepository;
     }

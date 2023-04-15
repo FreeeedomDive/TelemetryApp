@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 using SqlRepositoryBase.Core.Models;
 
-namespace TelemetryApp.Core.ApiTelemetry.Repository;
+namespace TelemetryApp.Core.ApiTelemetry.Repository.PostgreSql;
 
 [PrimaryKey("Id", "Project", "Service")]
 [Index("DateTime")]

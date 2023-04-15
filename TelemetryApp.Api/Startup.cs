@@ -4,11 +4,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using SqlRepositoryBase.Configuration.Extensions;
 using TelemetryApp.Core.ApiTelemetry.Repository;
+using TelemetryApp.Core.ApiTelemetry.Repository.Elastic;
+using TelemetryApp.Core.ApiTelemetry.Repository.PostgreSql;
 using TelemetryApp.Core.ApiTelemetry.Service;
 using TelemetryApp.Core.Database;
 using TelemetryApp.Core.Elastic;
 using TelemetryApp.Core.Logs.Repository;
 using TelemetryApp.Core.Logs.Repository.Elastic;
+using TelemetryApp.Core.Logs.Repository.PostgreSql;
 using TelemetryApp.Core.Logs.Service;
 using TelemetryApp.Core.ProjectServices.Repository;
 
@@ -43,8 +46,12 @@ public class Startup
         });
 
         services.AddTransient<IProjectServiceRepository, ProjectServiceRepository>();
-        services.AddTransient<IApiTelemetryRepository, ApiTelemetryRepository>();
-        services.AddTransient<ILogRepository, ElasticLogRepository>();
+        services.AddTransient<SqlApiTelemetryRepository>();
+        services.AddTransient<ElasticApiTelemetryRepository>();
+        services.AddTransient<IApiTelemetryRepository, CompositeApiTelemetryRepository>();
+        services.AddTransient<SqlLogRepository>();
+        services.AddTransient<ElasticLogRepository>();
+        services.AddTransient<ILogRepository, CompositeLogRepository>();
 
         services.AddTransient<IApiTelemetryService, ApiTelemetryService>();
         services.AddTransient<ILogService, LogService>();
@@ -53,7 +60,7 @@ public class Startup
         {
             options.AddPolicy(CorsConfigurationName,
                 policy => { policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod(); });
-        });
+        }); 
 
         services.AddControllers();
     }

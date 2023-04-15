@@ -7,9 +7,9 @@ using TelemetryApp.Api.Dto.Logs.Filter;
 
 namespace TelemetryApp.Core.Logs.Repository.PostgreSql;
 
-public class LogRepository : ILogRepository
+public class SqlLogRepository : ILogRepository
 {
-    public LogRepository(ISqlRepository<LogStorageElement> sqlRepository)
+    public SqlLogRepository(ISqlRepository<LogStorageElement> sqlRepository)
     {
         this.sqlRepository = sqlRepository;
     }

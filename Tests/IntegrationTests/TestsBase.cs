@@ -1,6 +1,6 @@
 using NUnit.Framework;
 using SqlRepositoryBase.Core.Repository;
-using TelemetryApp.Core.ApiTelemetry.Repository;
+using TelemetryApp.Core.ApiTelemetry.Repository.PostgreSql;
 using TelemetryApp.Core.ApiTelemetry.Service;
 using TelemetryApp.Core.Database;
 using TelemetryApp.Core.Logs.Repository;
@@ -21,10 +21,10 @@ public class TestsBase
         ProjectServiceRepository = new ProjectServiceRepository(projectsSqlRepository);
 
         var logsSqlRepository = new SqlRepository<LogStorageElement>(databaseContext);
-        var logsRepository = new LogRepository(logsSqlRepository);
+        var logsRepository = new SqlLogRepository(logsSqlRepository);
 
         var apiSqlRepository = new SqlRepository<ApiTelemetryStorageElement>(databaseContext);
-        var apiRepository = new ApiTelemetryRepository(apiSqlRepository);
+        var apiRepository = new SqlApiTelemetryRepository(apiSqlRepository);
 
         LogService = new LogService(ProjectServiceRepository, logsRepository);
         ApiTelemetryService = new ApiTelemetryService(ProjectServiceRepository, apiRepository);

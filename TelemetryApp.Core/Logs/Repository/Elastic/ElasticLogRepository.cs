@@ -1,10 +1,10 @@
 ﻿using System.Reflection;
 using Elastic.Clients.Elasticsearch;
-using Elastic.Clients.Elasticsearch.QueryDsl;
 using Microsoft.Extensions.Options;
 using TelemetryApp.Api.Dto.Logs;
 using TelemetryApp.Api.Dto.Logs.Filter;
 using TelemetryApp.Core.Elastic;
+using TelemetryApp.Core.Extensions;
 
 namespace TelemetryApp.Core.Logs.Repository.Elastic;
 
@@ -34,13 +34,12 @@ public class ElasticLogRepository : ILogRepository
             .Index(index)
             .Size(10000)
             .GetQueries(filter)
-            .Sort(descriptor => descriptor
-                .Field(l => l.DateTime, sortDescriptor => sortDescriptor.Order(SortOrder.Desc)));
+            .Sort(descriptor => descriptor.Field(l => l.DateTime, sortDescriptor => sortDescriptor.Order(SortOrder.Desc)));
         var response = await elasticsearchClient.SearchAsync(searchDescriptor);
 
-        return response.IsSuccess() ?
-            response.Documents.Select(ToModel).ToArray()
-            : Array.Empty<LogDto>();
+        return response.IsSuccess()
+            ? response.Documents.Select(ToModel).ToArray()
+            : throw new ElasticReadValuesException(response.ApiCallDetails.OriginalException.Message);
     }
 
     private static LogDto ToModel(ElasticLogStorageElement storageElement)

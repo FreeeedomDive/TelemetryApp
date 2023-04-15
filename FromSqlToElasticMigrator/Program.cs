@@ -12,4 +12,5 @@ var logRepository = new LogRepository(logsSqlRepository);
 var logs =  await logRepository.FindAsync(new LogFilterDto());
 
 var elasticLogRepository = new ElasticLogRepository("https://localhost:9200", "<USERNAME>", "<PASSWORD>", "<INDEX>");
+await elasticLogRepository.CreateIndexWithDynamicMapping("<INDEX>");
 elasticLogRepository.BulkAllObservable(logs);

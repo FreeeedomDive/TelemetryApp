@@ -1,4 +1,5 @@
 ﻿using Elastic.Clients.Elasticsearch;
+using Elastic.Clients.Elasticsearch.Mapping;
 using Elastic.Transport;
 using TelemetryApp.Api.Dto.Logs;
 using TelemetryApp.Api.Dto.Logs.Filter;
@@ -74,6 +75,17 @@ public class ElasticLogRepository : ILogRepository
                 .MaxDegreeOfParallelism(Environment.ProcessorCount)
                 .Size(1000))
             .Wait(TimeSpan.FromMinutes(15), response => { });
+    }
+
+    public async Task CreateIndexWithDynamicMapping(string indexName)
+    {
+        var response = await elasticsearchClient.Indices.CreateAsync(indexName, descriptor => descriptor
+            .Mappings(mappingDescriptor => mappingDescriptor.Dynamic(DynamicMapping.True)));
+        
+        if (!response.IsSuccess())
+        {
+            //куда-то нужно будет положить ошибку, на твоё усмотрение
+        }
     }
 
     private readonly ElasticsearchClient elasticsearchClient;

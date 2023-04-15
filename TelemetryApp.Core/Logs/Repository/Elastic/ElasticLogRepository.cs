@@ -39,8 +39,8 @@ public class ElasticLogRepository : ILogRepository
         var response = await elasticsearchClient.SearchAsync(searchDescriptor);
 
         return response.IsSuccess() ?
-            response.Documents.Select(ToModel).ToArray() :
-            Array.Empty<LogDto>();
+            response.Documents.Select(ToModel).ToArray()
+            : Array.Empty<LogDto>();
     }
 
     private static LogDto ToModel(ElasticLogStorageElement storageElement)

@@ -27,7 +27,7 @@ public static class SearchRequestDescriptorExtensions
                 Value = filter.LogLevel
             });
         if (!string.IsNullOrEmpty(filter.Template))
-            filterList.Add(new MatchQuery((Expression<Func<ElasticLogStorageElement, object>>)(entity => entity.LogLevel))
+            filterList.Add(new MatchQuery((Expression<Func<ElasticLogStorageElement, object>>)(entity => entity.Template))
             {
                 Query = filter.Template
             });

@@ -30,7 +30,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelemetryApp.Alerts.Telegra
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{C76B11CD-4F16-4A73-8CA8-11DE3DC22F26}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FromSqlToElasticMigrator", "FromSqlToElasticMigrator\FromSqlToElasticMigrator.csproj", "{20EEC165-F87B-4296-B5B9-F01DBD3CBD55}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelemetryApp.Tools", "TelemetryApp.Tools\TelemetryApp.Tools.csproj", "{20EEC165-F87B-4296-B5B9-F01DBD3CBD55}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

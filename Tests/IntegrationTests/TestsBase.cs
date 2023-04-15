@@ -4,6 +4,7 @@ using TelemetryApp.Core.ApiTelemetry.Repository;
 using TelemetryApp.Core.ApiTelemetry.Service;
 using TelemetryApp.Core.Database;
 using TelemetryApp.Core.Logs.Repository;
+using TelemetryApp.Core.Logs.Repository.PostgreSql;
 using TelemetryApp.Core.Logs.Service;
 using TelemetryApp.Core.ProjectServices.Repository;
 

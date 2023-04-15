@@ -15,8 +15,7 @@ public class ElasticLogRepository : ILogRepository
         var attribute = typeof(ElasticLogStorageElement).GetCustomAttribute(typeof(ElasticStorageElementAttribute));
         if (attribute is not ElasticStorageElementAttribute indexAttribute)
         {
-            throw new InvalidOperationException(
-                $"{nameof(ElasticLogStorageElement)} is not an Elastic storage element");
+            throw new InvalidOperationException($"{nameof(ElasticLogStorageElement)} is not an Elastic storage element");
         }
 
         var options = elasticOptions.Value;
@@ -34,51 +33,36 @@ public class ElasticLogRepository : ILogRepository
             .Index(index)
             .Size(10000)
             .Query(descriptor => descriptor
-                .Bool(queryDescriptor => queryDescriptor
-                    .Filter(serviceQueryDescriptor =>
-                        {
-                            if (!string.IsNullOrEmpty(filter.Service))
-                                serviceQueryDescriptor.Term(l => l.Service.Suffix("keyword"), filter.Service);
-                        },
-                        projectQueryDescriptor =>
-                        {
-                            if (!string.IsNullOrEmpty(filter.Project))
-                                projectQueryDescriptor.Term(l => l.Project.Suffix("keyword"), filter.Project);
-                        },
-                        logLevelQueryDescriptor =>
-                        {
-                            if (!string.IsNullOrEmpty(filter.LogLevel))
-                                logLevelQueryDescriptor.Term(l => l.LogLevel.Suffix("keyword"), filter.LogLevel);
-                        },
-                        templateQueryDescriptor =>
-                        {
-                            if (!string.IsNullOrEmpty(filter.Template))
-                                templateQueryDescriptor.Match(matchQueryDescriptor => matchQueryDescriptor
-                                    .Field(l => l.Template)
-                                    .Query(filter.Template));
-                        },
-                        dateFromQueryDescriptor =>
-                        {
-                            if (filter.DateTimeRange?.From != null)
-                                dateFromQueryDescriptor.Range(rangeQueryDescriptor => rangeQueryDescriptor
-                                    .DateRange(dateRangeQueryDescriptor => dateRangeQueryDescriptor
-                                        .Field(l => l.DateTime)
-                                        .From(filter.DateTimeRange.From)));
-                        },
-                        dateToQueryDescriptor =>
-                        {
-                            if (filter.DateTimeRange?.To != null)
-                                dateToQueryDescriptor.Range(rangeQueryDescriptor => rangeQueryDescriptor
-                                    .DateRange(dateRangeQueryDescriptor => dateRangeQueryDescriptor
-                                        .Field(l => l.DateTime)
-                                        .To(filter.DateTimeRange.To)));
-                        })))
+                .Bool(queryDescriptor => queryDescriptor.Filter(filterDescriptor =>
+                {
+                    if (!string.IsNullOrEmpty(filter.Service))
+                        filterDescriptor.Term(l => l.Service.Suffix("keyword"), filter.Service);
+                    if (!string.IsNullOrEmpty(filter.Project))
+                        filterDescriptor.Term(l => l.Project.Suffix("keyword"), filter.Project);
+                    if (!string.IsNullOrEmpty(filter.LogLevel))
+                        filterDescriptor.Term(l => l.LogLevel.Suffix("keyword"), filter.LogLevel);
+                    if (!string.IsNullOrEmpty(filter.Template))
+                        filterDescriptor.Match(matchQueryDescriptor => matchQueryDescriptor
+                            .Field(l => l.Template)
+                            .Query(filter.Template));
+                    if (filter.DateTimeRange?.From != null)
+                        filterDescriptor.Range(rangeQueryDescriptor => rangeQueryDescriptor
+                            .DateRange(dateRangeQueryDescriptor => dateRangeQueryDescriptor
+                                .Field(l => l.DateTime)
+                                .From(filter.DateTimeRange.From)));
+                    if (filter.DateTimeRange?.To != null)
+                        filterDescriptor.Range(rangeQueryDescriptor => rangeQueryDescriptor
+                            .DateRange(dateRangeQueryDescriptor => dateRangeQueryDescriptor
+                                .Field(l => l.DateTime)
+                                .To(filter.DateTimeRange.To)));
+                    filterDescriptor.MatchAll();
+                })))
             .Sort(descriptor => descriptor
                 .Field(l => l.DateTime, sortDescriptor => sortDescriptor.Order(SortOrder.Desc)));
         var response = await elasticsearchClient.SearchAsync(searchDescriptor);
 
-        return response.IsSuccess() ? 
-            response.Documents.Select(ToModel).ToArray() : 
+        return response.IsSuccess() ?
+            response.Documents.Select(ToModel).ToArray() :
             Array.Empty<LogDto>();
     }
 

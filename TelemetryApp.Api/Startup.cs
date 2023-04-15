@@ -29,11 +29,15 @@ public class Startup
 
         services.AddTransient<IProjectServiceRepository, ProjectServiceRepository>();
         services.AddTransient<IApiTelemetryRepository, ApiTelemetryRepository>();
-        services.AddTransient<ILogRepository, LogRepository>();
+        services.AddSingleton<ILogRepository>(new ElasticLogRepository(
+            "https://localhost:9200",
+            "<USERNAME>",
+            "<PASSWORD>",
+            "<INDEX>"));
 
         services.AddTransient<IApiTelemetryService, ApiTelemetryService>();
         services.AddTransient<ILogService, LogService>();
-        
+
         services.AddCors(options =>
         {
             options.AddPolicy(CorsConfigurationName,

@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Elastic.Clients.Elasticsearch;
+using Elastic.Clients.Elasticsearch.QueryDsl;
 using Microsoft.Extensions.Options;
 using TelemetryApp.Api.Dto.Logs;
 using TelemetryApp.Api.Dto.Logs.Filter;
@@ -32,31 +33,7 @@ public class ElasticLogRepository : ILogRepository
         var searchDescriptor = new SearchRequestDescriptor<ElasticLogStorageElement>()
             .Index(index)
             .Size(10000)
-            .Query(descriptor => descriptor
-                .Bool(queryDescriptor => queryDescriptor.Filter(filterDescriptor =>
-                {
-                    if (!string.IsNullOrEmpty(filter.Service))
-                        filterDescriptor.Term(l => l.Service.Suffix("keyword"), filter.Service);
-                    if (!string.IsNullOrEmpty(filter.Project))
-                        filterDescriptor.Term(l => l.Project.Suffix("keyword"), filter.Project);
-                    if (!string.IsNullOrEmpty(filter.LogLevel))
-                        filterDescriptor.Term(l => l.LogLevel.Suffix("keyword"), filter.LogLevel);
-                    if (!string.IsNullOrEmpty(filter.Template))
-                        filterDescriptor.Match(matchQueryDescriptor => matchQueryDescriptor
-                            .Field(l => l.Template)
-                            .Query(filter.Template));
-                    if (filter.DateTimeRange?.From != null)
-                        filterDescriptor.Range(rangeQueryDescriptor => rangeQueryDescriptor
-                            .DateRange(dateRangeQueryDescriptor => dateRangeQueryDescriptor
-                                .Field(l => l.DateTime)
-                                .From(filter.DateTimeRange.From)));
-                    if (filter.DateTimeRange?.To != null)
-                        filterDescriptor.Range(rangeQueryDescriptor => rangeQueryDescriptor
-                            .DateRange(dateRangeQueryDescriptor => dateRangeQueryDescriptor
-                                .Field(l => l.DateTime)
-                                .To(filter.DateTimeRange.To)));
-                    filterDescriptor.MatchAll();
-                })))
+            .GetQueries(filter)
             .Sort(descriptor => descriptor
                 .Field(l => l.DateTime, sortDescriptor => sortDescriptor.Order(SortOrder.Desc)));
         var response = await elasticsearchClient.SearchAsync(searchDescriptor);

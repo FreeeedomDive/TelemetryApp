@@ -36,25 +36,33 @@ public class ErrorAlertsWorker : IWorker
         var start = DateTime.UtcNow;
         while (await timer.WaitForNextTickAsync(cancellationTokenSource.Token))
         {
-            var projects = await projectsClient.ReadProjectsAsync();
             var end = DateTime.UtcNow;
             Console.WriteLine($"Getting errors from {start} to {end}");
-            var messageBuilder = new StringBuilder().Append($"Errors from {start} to {end}").AppendLine();
-            foreach (var project in projects)
+            try
             {
-                var errors = await logReaderClient.FindAsync(new LogFilterDto
+                var projects = await projectsClient.ReadProjectsAsync();
+                var messageBuilder = new StringBuilder().Append($"Errors from {start} to {end}").AppendLine();
+                foreach (var project in projects)
                 {
-                    Project = project,
-                    LogLevel = "ERROR",
-                    DateTimeRange = new DateTimeRange
+                    var errors = await logReaderClient.FindAsync(new LogFilterDto
                     {
-                        From = start,
-                        To = end
-                    }
-                });
-                messageBuilder.Append(project).Append(": ").Append(errors.Length).AppendLine();
+                        Project = project,
+                        LogLevel = "ERROR",
+                        DateTimeRange = new DateTimeRange
+                        {
+                            From = start,
+                            To = end
+                        }
+                    });
+                    messageBuilder.Append(project).Append(": ").Append(errors.Length).AppendLine();
+                }
+
+                await telegramBotClient.SendTextMessageAsync(new ChatId(settings.ChatId), messageBuilder.ToString());
             }
-            await telegramBotClient.SendTextMessageAsync(new ChatId(settings.ChatId), messageBuilder.ToString());
+            catch
+            {
+                Console.WriteLine($"Iteration at {end} has failed");
+            }
             start = end;
         }
     }

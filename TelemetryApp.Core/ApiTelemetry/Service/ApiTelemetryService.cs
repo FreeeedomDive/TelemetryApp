@@ -1,6 +1,7 @@
 using TelemetryApp.Api.Dto.ApiTelemetry;
 using TelemetryApp.Api.Dto.ApiTelemetry.Filter;
 using TelemetryApp.Core.ApiTelemetry.Repository;
+using TelemetryApp.Core.ApiTelemetry.Repository.PostgreSql;
 using TelemetryApp.Core.ProjectServices.Repository;
 
 namespace TelemetryApp.Core.ApiTelemetry.Service;

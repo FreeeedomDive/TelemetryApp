@@ -37,11 +37,13 @@ public class ErrorAlertsWorker : IWorker
         while (await timer.WaitForNextTickAsync(cancellationTokenSource.Token))
         {
             var end = DateTime.UtcNow;
-            Console.WriteLine($"Getting errors from {start} to {end}");
+            var startDateTimeFormatted = start.AddHours(5).ToString("yyyy-MM-dd HH:mm:ss");
+            var endDateTimeFormatted = end.AddHours(5).ToString("yyyy-MM-dd HH:mm:ss");
+            Console.WriteLine($"Getting errors from {startDateTimeFormatted} to {endDateTimeFormatted}");
             try
             {
                 var projects = await projectsClient.ReadProjectsAsync();
-                var messageBuilder = new StringBuilder().Append($"Errors from {start} to {end}").AppendLine();
+                var messageBuilder = new StringBuilder().Append($"Errors from {startDateTimeFormatted} to {endDateTimeFormatted}").AppendLine();
                 foreach (var project in projects)
                 {
                     var errors = await logReaderClient.FindAsync(new LogFilterDto

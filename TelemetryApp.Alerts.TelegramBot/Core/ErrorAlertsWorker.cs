@@ -53,9 +53,13 @@ public class ErrorAlertsWorker : IWorker
                         DateTimeRange = new DateTimeRange
                         {
                             From = start,
-                            To = end
-                        }
+                            To = end,
+                        },
                     });
+                    if (errors.Length == 0)
+                    {
+                        continue;
+                    }
                     messageBuilder.Append(project).Append(": ").Append(errors.Length).AppendLine();
                 }
 

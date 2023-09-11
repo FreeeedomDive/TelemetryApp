@@ -21,11 +21,11 @@ public static class StandardKernelExtensions
         // configure logger
         var loggerClient = new LoggerClient(restClient, project, service);
         ninjectKernel.Bind<ILoggerClient>().ToConstant(loggerClient);
-        
+
         // configure telemetry client
         var apiTelemetryClient = new ApiTelemetryClient(restClient, project, service);
         ninjectKernel.Bind<IApiTelemetryClient>().ToConstant(apiTelemetryClient);
-        
+
         // configure telemetry filters
         var filter = new TelemetryFilter();
         if (configureTelemetryFilters != null)
@@ -37,7 +37,7 @@ public static class StandardKernelExtensions
         }
 
         ninjectKernel.Bind<TelemetryFilter>().ToConstant(filter);
-        
+
         // configure read clients
         var logReaderClient = new LogReaderClient(restClient);
         ninjectKernel.Bind<ILogReaderClient>().ToConstant(logReaderClient);

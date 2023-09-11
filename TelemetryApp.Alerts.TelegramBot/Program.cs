@@ -25,7 +25,7 @@ public class Program
         {
             new TelegramMessagesWorker(telegramBotClient, dockerClient, loggerClient, cancellationTokenSource),
             // new EventsMonitoringWorker(telegramBotClient, dockerClient, loggerClient, settings, cancellationTokenSource),
-            new ErrorAlertsWorker(telegramBotClient, projectsClient, logReaderClient, settings, cancellationTokenSource)
+            new ErrorAlertsWorker(telegramBotClient, projectsClient, logReaderClient, settings, cancellationTokenSource),
         };
         await Task.WhenAll(workers.Select(x => x.Start()));
     }

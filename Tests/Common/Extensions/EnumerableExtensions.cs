@@ -7,5 +7,5 @@ public static class EnumerableExtensions
         return array[random.Next(array.Length)];
     }
 
-    private static Random random = new();
+    private static readonly Random random = new();
 }

@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using TelemetryApp.Core.ApiTelemetry.Repository.PostgreSql;
-using TelemetryApp.Core.Logs.Repository;
 using TelemetryApp.Core.Logs.Repository.PostgreSql;
 using TelemetryApp.Core.ProjectServices.Repository;
 
@@ -23,7 +22,7 @@ public class DatabaseContext : DbContext
                                ?? throw new InvalidOperationException("No ConnectionString was provided");
         Options = new DatabaseOptions
         {
-            ConnectionString = connectionString
+            ConnectionString = connectionString,
         };
     }
 

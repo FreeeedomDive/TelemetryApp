@@ -31,10 +31,10 @@ public class ElasticLogRepository : ILogRepository
     public async Task<LogDto[]> FindAsync(LogFilterDto filter)
     {
         var searchDescriptor = new SearchRequestDescriptor<ElasticLogStorageElement>()
-            .Index(index)
-            .Size(10000)
-            .GetQueries(filter)
-            .Sort(descriptor => descriptor.Field(l => l.DateTime, sortDescriptor => sortDescriptor.Order(SortOrder.Desc)));
+                               .Index(index)
+                               .Size(10000)
+                               .GetQueries(filter)
+                               .Sort(descriptor => descriptor.Field(l => l.DateTime, sortDescriptor => sortDescriptor.Order(SortOrder.Desc)));
         var response = await elasticsearchClient.SearchAsync(searchDescriptor);
 
         return response.IsSuccess()
@@ -52,7 +52,7 @@ public class ElasticLogRepository : ILogRepository
             Template = storageElement.Template,
             Params = storageElement.Params,
             Exception = storageElement.Exception,
-            DateTime = storageElement.DateTime
+            DateTime = storageElement.DateTime,
         };
     }
 
@@ -67,10 +67,11 @@ public class ElasticLogRepository : ILogRepository
             Template = dto.Template,
             Params = dto.Params,
             Exception = dto.Exception,
-            DateTime = dto.DateTime ?? DateTime.UtcNow
+            DateTime = dto.DateTime ?? DateTime.UtcNow,
         };
     }
 
-    private readonly string index;
     private readonly ElasticsearchClient elasticsearchClient;
+
+    private readonly string index;
 }

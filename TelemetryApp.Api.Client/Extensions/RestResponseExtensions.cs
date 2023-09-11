@@ -7,7 +7,10 @@ internal static class RestResponseExtensions
 {
     public static void ThrowIfNotSuccessful(this RestResponse restResponse)
     {
-        if (restResponse.IsSuccessful) return;
+        if (restResponse.IsSuccessful)
+        {
+            return;
+        }
 
         if (restResponse.Content == null)
         {

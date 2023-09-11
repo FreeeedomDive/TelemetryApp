@@ -20,15 +20,16 @@ public class ActualizeElasticIndicesTool : ITool
     {
         var assemblies = AppDomain.CurrentDomain.GetAssemblies();
         var elasticIndicies = assemblies
-            .SelectMany(x => x.GetTypes())
-            .Select(t =>
-                t.GetCustomAttribute(typeof(ElasticStorageElementAttribute)) is ElasticStorageElementAttribute e
-                    ? e.Name
-                    : null
-            )
-            .Where(x => x is not null)
-            .Select(x => ElasticIndicesTools.CreateIndexName(x!, elasticOptions.ApplicationName, elasticOptions.Environment))
-            .ToArray();
+                              .SelectMany(x => x.GetTypes())
+                              .Select(
+                                  t =>
+                                      t.GetCustomAttribute(typeof(ElasticStorageElementAttribute)) is ElasticStorageElementAttribute e
+                                          ? e.Name
+                                          : null
+                              )
+                              .Where(x => x is not null)
+                              .Select(x => ElasticIndicesTools.CreateIndexName(x!, elasticOptions.ApplicationName, elasticOptions.Environment))
+                              .ToArray();
 
         foreach (var index in elasticIndicies)
         {
@@ -51,8 +52,8 @@ public class ActualizeElasticIndicesTool : ITool
         }
     }
 
-    private readonly ElasticsearchClient elasticsearchClient;
+    public string Name => nameof(ActualizeElasticIndicesTool);
     private readonly ElasticOptions elasticOptions;
 
-    public string Name => nameof(ActualizeElasticIndicesTool);
+    private readonly ElasticsearchClient elasticsearchClient;
 }

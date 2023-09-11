@@ -34,6 +34,7 @@ public class LogService : ILogService
         return await logRepository.FindAsync(filter);
     }
 
-    private readonly IProjectServiceRepository projectServiceRepository;
     private readonly ILogRepository logRepository;
+
+    private readonly IProjectServiceRepository projectServiceRepository;
 }

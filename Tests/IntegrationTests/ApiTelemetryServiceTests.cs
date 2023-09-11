@@ -13,33 +13,39 @@ public class ApiTelemetryServiceTests : TestsBase
     [Test]
     public async Task CreateAndFind()
     {
-        var currentProjectApiLogs = await ApiTelemetryService.FindAsync(new ApiRequestInfoFilterDto
-        {
-            Project = ProjectName,
-            Service = ServiceName
-        });
+        var currentProjectApiLogs = await ApiTelemetryService.FindAsync(
+            new ApiRequestInfoFilterDto
+            {
+                Project = ProjectName,
+                Service = ServiceName,
+            }
+        );
 
         var id = Guid.NewGuid().ToString();
         currentProjectApiLogs.Should().BeEmpty();
-        await ApiTelemetryService.CreateAsync(new ApiTelemetryDto
-        {
-            Project = ProjectName,
-            Service = ServiceName,
-            Method = ApiGenerator.GenerateApiMethod(),
-            RoutePattern = "api/telemetryTests/{id}/createAndFind",
-            RouteParametersValues = new Dictionary<string, string>()
+        await ApiTelemetryService.CreateAsync(
+            new ApiTelemetryDto
             {
-                { "id", id }
-            },
-            ExecutionTime = Random.NextInt64(2000),
-            StatusCode = ApiGenerator.GenerateStatusCode()
-        });
+                Project = ProjectName,
+                Service = ServiceName,
+                Method = ApiGenerator.GenerateApiMethod(),
+                RoutePattern = "api/telemetryTests/{id}/createAndFind",
+                RouteParametersValues = new Dictionary<string, string>
+                {
+                    { "id", id },
+                },
+                ExecutionTime = Random.NextInt64(2000),
+                StatusCode = ApiGenerator.GenerateStatusCode(),
+            }
+        );
 
-        currentProjectApiLogs = await ApiTelemetryService.FindAsync(new ApiRequestInfoFilterDto
-        {
-            Project = ProjectName,
-            Service = ServiceName
-        });
+        currentProjectApiLogs = await ApiTelemetryService.FindAsync(
+            new ApiRequestInfoFilterDto
+            {
+                Project = ProjectName,
+                Service = ServiceName,
+            }
+        );
 
         currentProjectApiLogs.Length.Should().Be(1);
     }
@@ -57,26 +63,30 @@ public class ApiTelemetryServiceTests : TestsBase
             var project = projects.SelectRandom();
             var service = services.SelectRandom();
             expected += project == ProjectName && service == ServiceName ? 1 : 0;
-            await ApiTelemetryService.CreateAsync(new ApiTelemetryDto
-            {
-                Project = project,
-                Service = service,
-                Method = ApiGenerator.GenerateApiMethod(),
-                RoutePattern = "api/telemetryTests/{id}/findByProjectAndService",
-                RouteParametersValues = new Dictionary<string, string>()
+            await ApiTelemetryService.CreateAsync(
+                new ApiTelemetryDto
                 {
-                    { "id", Guid.NewGuid().ToString() }
-                },
-                ExecutionTime = Random.NextInt64(2000),
-                StatusCode = ApiGenerator.GenerateStatusCode()
-            });
+                    Project = project,
+                    Service = service,
+                    Method = ApiGenerator.GenerateApiMethod(),
+                    RoutePattern = "api/telemetryTests/{id}/findByProjectAndService",
+                    RouteParametersValues = new Dictionary<string, string>
+                    {
+                        { "id", Guid.NewGuid().ToString() },
+                    },
+                    ExecutionTime = Random.NextInt64(2000),
+                    StatusCode = ApiGenerator.GenerateStatusCode(),
+                }
+            );
         }
 
-        var currentProjectApiLogs = await ApiTelemetryService.FindAsync(new ApiRequestInfoFilterDto
-        {
-            Project = ProjectName,
-            Service = ServiceName
-        });
+        var currentProjectApiLogs = await ApiTelemetryService.FindAsync(
+            new ApiRequestInfoFilterDto
+            {
+                Project = ProjectName,
+                Service = ServiceName,
+            }
+        );
 
         currentProjectApiLogs.Length.Should().Be(expected);
     }
@@ -91,29 +101,33 @@ public class ApiTelemetryServiceTests : TestsBase
         {
             var method = ApiGenerator.GenerateApiMethod();
             methodsCounter[method]++;
-            await ApiTelemetryService.CreateAsync(new ApiTelemetryDto
-            {
-                Project = ProjectName,
-                Service = ServiceName,
-                Method = method,
-                RoutePattern = "api/telemetryTests/{id}/findByMethod",
-                RouteParametersValues = new Dictionary<string, string>()
+            await ApiTelemetryService.CreateAsync(
+                new ApiTelemetryDto
                 {
-                    { "id", Guid.NewGuid().ToString() }
-                },
-                ExecutionTime = Random.NextInt64(2000),
-                StatusCode = ApiGenerator.GenerateStatusCode()
-            });
+                    Project = ProjectName,
+                    Service = ServiceName,
+                    Method = method,
+                    RoutePattern = "api/telemetryTests/{id}/findByMethod",
+                    RouteParametersValues = new Dictionary<string, string>
+                    {
+                        { "id", Guid.NewGuid().ToString() },
+                    },
+                    ExecutionTime = Random.NextInt64(2000),
+                    StatusCode = ApiGenerator.GenerateStatusCode(),
+                }
+            );
         }
 
         foreach (var method in ApiGenerator.Methods)
         {
-            var logsByMethod = await ApiTelemetryService.FindAsync(new ApiRequestInfoFilterDto
-            {
-                Project = ProjectName,
-                Service = ServiceName,
-                Method = method
-            });
+            var logsByMethod = await ApiTelemetryService.FindAsync(
+                new ApiRequestInfoFilterDto
+                {
+                    Project = ProjectName,
+                    Service = ServiceName,
+                    Method = method,
+                }
+            );
 
             logsByMethod.Length.Should().Be(methodsCounter[method]);
         }
@@ -129,29 +143,33 @@ public class ApiTelemetryServiceTests : TestsBase
         {
             var statusCode = ApiGenerator.GenerateStatusCode();
             statusCodesCounter[statusCode]++;
-            await ApiTelemetryService.CreateAsync(new ApiTelemetryDto
-            {
-                Project = ProjectName,
-                Service = ServiceName,
-                Method = ApiGenerator.GenerateApiMethod(),
-                RoutePattern = "api/telemetryTests/{id}/findByStatusCode",
-                RouteParametersValues = new Dictionary<string, string>()
+            await ApiTelemetryService.CreateAsync(
+                new ApiTelemetryDto
                 {
-                    { "id", Guid.NewGuid().ToString() }
-                },
-                ExecutionTime = Random.NextInt64(2000),
-                StatusCode = statusCode
-            });
+                    Project = ProjectName,
+                    Service = ServiceName,
+                    Method = ApiGenerator.GenerateApiMethod(),
+                    RoutePattern = "api/telemetryTests/{id}/findByStatusCode",
+                    RouteParametersValues = new Dictionary<string, string>
+                    {
+                        { "id", Guid.NewGuid().ToString() },
+                    },
+                    ExecutionTime = Random.NextInt64(2000),
+                    StatusCode = statusCode,
+                }
+            );
         }
 
         foreach (var statusCode in ApiGenerator.StatusCodes)
         {
-            var statusCodeLogs = await ApiTelemetryService.FindAsync(new ApiRequestInfoFilterDto
-            {
-                Project = ProjectName,
-                Service = ServiceName,
-                StatusCode = statusCode
-            });
+            var statusCodeLogs = await ApiTelemetryService.FindAsync(
+                new ApiRequestInfoFilterDto
+                {
+                    Project = ProjectName,
+                    Service = ServiceName,
+                    StatusCode = statusCode,
+                }
+            );
 
             statusCodeLogs.Length.Should().Be(statusCodesCounter[statusCode]);
         }
@@ -169,18 +187,21 @@ public class ApiTelemetryServiceTests : TestsBase
         var expectedCurrentLogsCount = itemsCount;
         do
         {
-            logs = await ApiTelemetryService.FindAsync(new ApiRequestInfoFilterDto
-            {
-                Project = ProjectName,
-                Service = ServiceName,
-                ExecutionTimeRange = new ExecutionTimeRange
+            logs = await ApiTelemetryService.FindAsync(
+                new ApiRequestInfoFilterDto
                 {
-                    From = from
+                    Project = ProjectName,
+                    Service = ServiceName,
+                    ExecutionTimeRange = new ExecutionTimeRange
+                    {
+                        From = from,
+                    },
                 }
-            });
+            );
             logs.Length.Should().Be(expectedCurrentLogsCount--);
             from += step;
-        } while (logs.Length > 0);
+        }
+        while (logs.Length > 0);
     }
 
     [Test]
@@ -195,15 +216,17 @@ public class ApiTelemetryServiceTests : TestsBase
         var expectedCurrentLogsCount = 0;
         while (logs.Length < itemsCount)
         {
-            logs = await ApiTelemetryService.FindAsync(new ApiRequestInfoFilterDto
-            {
-                Project = ProjectName,
-                Service = ServiceName,
-                ExecutionTimeRange = new ExecutionTimeRange
+            logs = await ApiTelemetryService.FindAsync(
+                new ApiRequestInfoFilterDto
                 {
-                    To = to
+                    Project = ProjectName,
+                    Service = ServiceName,
+                    ExecutionTimeRange = new ExecutionTimeRange
+                    {
+                        To = to,
+                    },
                 }
-            });
+            );
             logs.Length.Should().Be(expectedCurrentLogsCount++);
             to += step;
         }
@@ -222,16 +245,18 @@ public class ApiTelemetryServiceTests : TestsBase
             var from = Random.Next(0, max - 1);
             var to = Random.Next(from, max);
             var expected = executionTimes.Count(x => from <= x && x <= to);
-            var actual = await ApiTelemetryService.FindAsync(new ApiRequestInfoFilterDto
-            {
-                Project = ProjectName,
-                Service = ServiceName,
-                ExecutionTimeRange = new ExecutionTimeRange
+            var actual = await ApiTelemetryService.FindAsync(
+                new ApiRequestInfoFilterDto
                 {
-                    From = from,
-                    To = to
+                    Project = ProjectName,
+                    Service = ServiceName,
+                    ExecutionTimeRange = new ExecutionTimeRange
+                    {
+                        From = from,
+                        To = to,
+                    },
                 }
-            });
+            );
             actual.Length.Should().Be(expected);
         }
     }
@@ -239,7 +264,7 @@ public class ApiTelemetryServiceTests : TestsBase
     [Test]
     public async Task FindByDateTime_StartRange()
     {
-        var startDate = DateTime.UtcNow.Date; 
+        var startDate = DateTime.UtcNow.Date;
         const int itemsCount = 20;
         const int stepInMinutes = 30;
         await WriteLogsWithDateTimesAsync(Enumerable.Range(1, itemsCount).Select(x => startDate.AddMinutes(x * stepInMinutes)));
@@ -250,24 +275,27 @@ public class ApiTelemetryServiceTests : TestsBase
         var expectedCurrentLogsCount = itemsCount;
         do
         {
-            logs = await ApiTelemetryService.FindAsync(new ApiRequestInfoFilterDto
-            {
-                Project = ProjectName,
-                Service = ServiceName,
-                DateTimeRange = new DateTimeRange
+            logs = await ApiTelemetryService.FindAsync(
+                new ApiRequestInfoFilterDto
                 {
-                    From = from
+                    Project = ProjectName,
+                    Service = ServiceName,
+                    DateTimeRange = new DateTimeRange
+                    {
+                        From = from,
+                    },
                 }
-            });
+            );
             logs.Length.Should().Be(expectedCurrentLogsCount--);
             from = from.AddMinutes(stepInMinutes);
-        } while (logs.Length > 0);
+        }
+        while (logs.Length > 0);
     }
 
     [Test]
     public async Task FindByDateTime_EndRange()
     {
-        var startDate = DateTime.UtcNow.Date; 
+        var startDate = DateTime.UtcNow.Date;
         const int itemsCount = 20;
         const int stepInMinutes = 30;
         await WriteLogsWithDateTimesAsync(Enumerable.Range(1, itemsCount).Select(x => startDate.AddMinutes(x * stepInMinutes)));
@@ -278,15 +306,17 @@ public class ApiTelemetryServiceTests : TestsBase
         var expectedCurrentLogsCount = 0;
         while (logs.Length < itemsCount)
         {
-            logs = await ApiTelemetryService.FindAsync(new ApiRequestInfoFilterDto
-            {
-                Project = ProjectName,
-                Service = ServiceName,
-                DateTimeRange = new DateTimeRange
+            logs = await ApiTelemetryService.FindAsync(
+                new ApiRequestInfoFilterDto
                 {
-                    To = to
+                    Project = ProjectName,
+                    Service = ServiceName,
+                    DateTimeRange = new DateTimeRange
+                    {
+                        To = to,
+                    },
                 }
-            });
+            );
             logs.Length.Should().Be(expectedCurrentLogsCount++);
             to = to.AddMinutes(stepInMinutes);
         }
@@ -295,7 +325,7 @@ public class ApiTelemetryServiceTests : TestsBase
     [Test]
     public async Task FindByDateTime_FullRange()
     {
-        var startDate = DateTime.UtcNow.Date; 
+        var startDate = DateTime.UtcNow.Date;
         const int itemsCount = 20;
         const int maxMinutes = 1000;
         var dates = Enumerable.Range(1, itemsCount).Select(_ => startDate.AddMinutes(Random.Next(maxMinutes))).ToArray();
@@ -307,16 +337,18 @@ public class ApiTelemetryServiceTests : TestsBase
             var fromDate = startDate.AddMinutes(from);
             var toDate = startDate.AddMinutes(Random.Next(from, maxMinutes));
             var expected = dates.Count(x => fromDate <= x && x <= toDate);
-            var actual = await ApiTelemetryService.FindAsync(new ApiRequestInfoFilterDto
-            {
-                Project = ProjectName,
-                Service = ServiceName,
-                DateTimeRange = new DateTimeRange()
+            var actual = await ApiTelemetryService.FindAsync(
+                new ApiRequestInfoFilterDto
                 {
-                    From = fromDate,
-                    To = toDate
+                    Project = ProjectName,
+                    Service = ServiceName,
+                    DateTimeRange = new DateTimeRange
+                    {
+                        From = fromDate,
+                        To = toDate,
+                    },
                 }
-            });
+            );
             actual.Length.Should().Be(expected);
         }
     }
@@ -324,20 +356,22 @@ public class ApiTelemetryServiceTests : TestsBase
     private async Task WriteLogsWithExecutionTimesAsync(IEnumerable<int> executionTimes)
     {
         var dtos = executionTimes
-            .Select(executionTime => new ApiTelemetryDto
-            {
-                Project = ProjectName,
-                Service = ServiceName,
-                Method = ApiGenerator.GenerateApiMethod(),
-                RoutePattern = "api/telemetryTests/{id}/findByExecutionTime",
-                RouteParametersValues = new Dictionary<string, string>()
-                {
-                    { "id", Guid.NewGuid().ToString() }
-                },
-                ExecutionTime = executionTime,
-                StatusCode = 200
-            })
-            .ToArray();
+                   .Select(
+                       executionTime => new ApiTelemetryDto
+                       {
+                           Project = ProjectName,
+                           Service = ServiceName,
+                           Method = ApiGenerator.GenerateApiMethod(),
+                           RoutePattern = "api/telemetryTests/{id}/findByExecutionTime",
+                           RouteParametersValues = new Dictionary<string, string>
+                           {
+                               { "id", Guid.NewGuid().ToString() },
+                           },
+                           ExecutionTime = executionTime,
+                           StatusCode = 200,
+                       }
+                   )
+                   .ToArray();
 
         foreach (var dto in dtos)
         {
@@ -348,21 +382,23 @@ public class ApiTelemetryServiceTests : TestsBase
     private async Task WriteLogsWithDateTimesAsync(IEnumerable<DateTime> dateTimes)
     {
         var dtos = dateTimes
-            .Select(dateTime => new ApiTelemetryDto
-            {
-                Project = ProjectName,
-                Service = ServiceName,
-                Method = ApiGenerator.GenerateApiMethod(),
-                RoutePattern = "api/telemetryTests/{id}/findByDateTime",
-                RouteParametersValues = new Dictionary<string, string>()
-                {
-                    { "id", Guid.NewGuid().ToString() }
-                },
-                ExecutionTime = Random.Next(2000),
-                StatusCode = 200,
-                DateTime = dateTime
-            })
-            .ToArray();
+                   .Select(
+                       dateTime => new ApiTelemetryDto
+                       {
+                           Project = ProjectName,
+                           Service = ServiceName,
+                           Method = ApiGenerator.GenerateApiMethod(),
+                           RoutePattern = "api/telemetryTests/{id}/findByDateTime",
+                           RouteParametersValues = new Dictionary<string, string>
+                           {
+                               { "id", Guid.NewGuid().ToString() },
+                           },
+                           ExecutionTime = Random.Next(2000),
+                           StatusCode = 200,
+                           DateTime = dateTime,
+                       }
+                   )
+                   .ToArray();
 
         foreach (var dto in dtos)
         {

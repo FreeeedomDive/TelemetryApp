@@ -27,14 +27,14 @@ public class TelegramMessagesWorker : IWorker
     {
         var receiverOptions = new ReceiverOptions
         {
-            AllowedUpdates = Array.Empty<UpdateType>()
+            AllowedUpdates = Array.Empty<UpdateType>(),
         };
 
         telegramBotClient.StartReceiving(
-            updateHandler: HandleUpdateAsync,
-            pollingErrorHandler: HandlePollingErrorAsync,
-            receiverOptions: receiverOptions,
-            cancellationToken: cancellationTokenSource.Token
+            HandleUpdateAsync,
+            HandlePollingErrorAsync,
+            receiverOptions,
+            cancellationTokenSource.Token
         );
 
         Console.WriteLine("Starting bot...");
@@ -49,11 +49,15 @@ public class TelegramMessagesWorker : IWorker
     private async Task HandleUpdateAsync(ITelegramBotClient client, Update update, CancellationToken cancellationToken)
     {
         if (update.Message is not { Text: { } messageText } message)
+        {
             return;
+        }
 
         var chatId = message.Chat.Id;
-        await logger.InfoAsync("{Username} ({UserId}): {Message}", message.Chat.Username ?? chatId.ToString(), chatId,
-            messageText);
+        await logger.InfoAsync(
+            "{Username} ({UserId}): {Message}", message.Chat.Username ?? chatId.ToString(), chatId,
+            messageText
+        );
         try
         {
             switch (messageText)
@@ -66,25 +70,25 @@ public class TelegramMessagesWorker : IWorker
                     var containers = (await dockerClient.Containers.ListContainersAsync(
                         new ContainersListParameters
                         {
-                            All = true
+                            All = true,
                         },
                         cancellationToken
                     )).ToArray();
                     var otherContainers = containers
-                        .Where(container => container.Names.First().Split('-', '_').Length == 1)
-                        .ToArray();
+                                          .Where(container => container.Names.First().Split('-', '_').Length == 1)
+                                          .ToArray();
                     containers = containers.Except(otherContainers).ToArray();
                     var oldComposeContainers = containers
                         .Where(container => !container.Names.First().StartsWith("/k8s"));
                     var newKubernetesContainers = containers
                         .Where(container => container.Names.First().StartsWith("/k8s"));
-                    var applications = new[] {"===== Common ====="}
-                        .Concat(BuildCommonApplicationContainersOutput(otherContainers))
-                        .Concat(new[] {"===== Docker Compose ====="})
-                        .Concat(BuildComposeApplicationContainersOutput(oldComposeContainers))
-                        .Concat(new[] {"===== Kubernetes Cluster ====="})
-                        .Concat(BuildKubernetesApplicationContainersOutput(newKubernetesContainers))
-                        .ToArray();
+                    var applications = new[] { "===== Common =====" }
+                                       .Concat(BuildCommonApplicationContainersOutput(otherContainers))
+                                       .Concat(new[] { "===== Docker Compose =====" })
+                                       .Concat(BuildComposeApplicationContainersOutput(oldComposeContainers))
+                                       .Concat(new[] { "===== Kubernetes Cluster =====" })
+                                       .Concat(BuildKubernetesApplicationContainersOutput(newKubernetesContainers))
+                                       .ToArray();
 
                     var content = string.Join("\n", applications);
                     await SendMessage(chatId, content);
@@ -100,44 +104,53 @@ public class TelegramMessagesWorker : IWorker
     }
 
     private static IEnumerable<string> BuildCommonApplicationContainersOutput(
-        IEnumerable<ContainerListResponse> containers)
+        IEnumerable<ContainerListResponse> containers
+    )
     {
         return containers.Select(c => $"{c.Names.First()[1..]}  -  {c.Status}");
     }
 
     private static IEnumerable<string> BuildComposeApplicationContainersOutput(
-        IEnumerable<ContainerListResponse> containers)
+        IEnumerable<ContainerListResponse> containers
+    )
     {
         var groups = containers
             .GroupBy(container => container.Names.First()[1..].Split('-')[0]);
         return groups
-            .Select(group =>
-            {
-                var app = group.Key;
-                var containerNames = group
-                    .Select(container => $"    {container.Names.First()[1..].Split('-')[1]}  -  {container.Status}")
-                    .ToArray();
-                return $"{app}\n{string.Join("\n", containerNames)}";
-            })
-            .ToArray();
+               .Select(
+                   group =>
+                   {
+                       var app = group.Key;
+                       var containerNames = group
+                                            .Select(container => $"    {container.Names.First()[1..].Split('-')[1]}  -  {container.Status}")
+                                            .ToArray();
+                       return $"{app}\n{string.Join("\n", containerNames)}";
+                   }
+               )
+               .ToArray();
     }
 
     private static IEnumerable<string> BuildKubernetesApplicationContainersOutput(
-        IEnumerable<ContainerListResponse> containers)
+        IEnumerable<ContainerListResponse> containers
+    )
     {
         var groups = containers
             .GroupBy(container => container.Names.First().Split('_')[2].Split('-')[0]);
         return groups
-            .Select(group =>
-            {
-                var app = group.Key;
-                var containerNames = group
-                    .Select(container =>
-                        $"    {container.Names.First().Split('_')[2].Split('-')[1]}  -  {container.Status}")
-                    .ToArray();
-                return $"{app}\n{string.Join("\n", containerNames)}";
-            })
-            .ToArray();
+               .Select(
+                   group =>
+                   {
+                       var app = group.Key;
+                       var containerNames = group
+                                            .Select(
+                                                container =>
+                                                    $"    {container.Names.First().Split('_')[2].Split('-')[1]}  -  {container.Status}"
+                                            )
+                                            .ToArray();
+                       return $"{app}\n{string.Join("\n", containerNames)}";
+                   }
+               )
+               .ToArray();
     }
 
     private async Task SendMessage(long chatId, string message)
@@ -145,9 +158,10 @@ public class TelegramMessagesWorker : IWorker
         try
         {
             await telegramBotClient.SendTextMessageAsync(
-                chatId: chatId,
-                text: message,
-                cancellationToken: cancellationTokenSource.Token);
+                chatId,
+                message,
+                cancellationToken: cancellationTokenSource.Token
+            );
         }
         catch (Exception exception)
         {
@@ -155,8 +169,9 @@ public class TelegramMessagesWorker : IWorker
         }
     }
 
-    private readonly ITelegramBotClient telegramBotClient;
+    private readonly CancellationTokenSource cancellationTokenSource;
     private readonly IDockerClient dockerClient;
     private readonly ILoggerClient logger;
-    private readonly CancellationTokenSource cancellationTokenSource;
+
+    private readonly ITelegramBotClient telegramBotClient;
 }

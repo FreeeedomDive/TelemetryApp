@@ -8,7 +8,11 @@ public static class EnumerableExtensions
     {
         foreach (var element in enumerable)
         {
-            if (element!.Equals(expected)) continue;
+            if (element!.Equals(expected))
+            {
+                continue;
+            }
+
             Assert.Fail();
         }
     }

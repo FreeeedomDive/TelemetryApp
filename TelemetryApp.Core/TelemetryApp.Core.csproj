@@ -7,22 +7,22 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Elastic.Clients.Elasticsearch" Version="8.1.0" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.1">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
-      <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.1" />
-      <PackageReference Include="Xdd.SqlRepositoryBase.Core" Version="1.0.6" />
+        <PackageReference Include="Elastic.Clients.Elasticsearch" Version="8.1.0"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.1">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.2"/>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.1"/>
+        <PackageReference Include="Xdd.SqlRepositoryBase.Core" Version="1.0.6"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\TelemetryApp.Api.Dto\TelemetryApp.Api.Dto.csproj" />
+        <ProjectReference Include="..\TelemetryApp.Api.Dto\TelemetryApp.Api.Dto.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Migrations" />
+        <Folder Include="Migrations"/>
     </ItemGroup>
 
 </Project>

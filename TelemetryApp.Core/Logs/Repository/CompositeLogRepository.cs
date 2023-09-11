@@ -29,6 +29,7 @@ public class CompositeLogRepository : ILogRepository
         return elasticLogRepository.FindAsync(filter);
     }
 
-    private readonly SqlLogRepository sqlLogRepository;
     private readonly ElasticLogRepository elasticLogRepository;
+
+    private readonly SqlLogRepository sqlLogRepository;
 }

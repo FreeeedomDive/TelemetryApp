@@ -46,24 +46,29 @@ public class LoggerClient : BaseClient, ILoggerClient
 
     private async Task CreateAsync(string level, string template, IEnumerable<object> args, Exception? exception = null)
     {
-        await PerformRequestAsync(async () =>
-        {
-            var request = new RestRequest("Logs/create");
-            request.AddJsonBody(new LogDto
+        await PerformRequestAsync(
+            async () =>
             {
-                Project = project,
-                Service = service,
-                LogLevel = level,
-                Template = template,
-                Params = args.Select(x => x == null ? "" : x.ToString()!).ToArray(),
-                Exception = exception == null ? "" : JsonConvert.SerializeObject(exception, Formatting.Indented)
-            });
-            var response = await restClient.ExecutePostAsync(request);
-            response.ThrowIfNotSuccessful();
-        });
+                var request = new RestRequest("Logs/create");
+                request.AddJsonBody(
+                    new LogDto
+                    {
+                        Project = project,
+                        Service = service,
+                        LogLevel = level,
+                        Template = template,
+                        Params = args.Select(x => x == null ? "" : x.ToString()!).ToArray(),
+                        Exception = exception == null ? "" : JsonConvert.SerializeObject(exception, Formatting.Indented),
+                    }
+                );
+                var response = await restClient.ExecutePostAsync(request);
+                response.ThrowIfNotSuccessful();
+            }
+        );
     }
 
-    private readonly RestClient restClient;
     private readonly string project;
+
+    private readonly RestClient restClient;
     private readonly string service;
 }

@@ -13,23 +13,25 @@ public class ProjectServiceRepository : IProjectServiceRepository
 
     public async Task CreateAsync(string project, string service)
     {
-        await sqlRepository.CreateAsync(new ProjectServiceStorageElement
-        {
-            Id = Guid.NewGuid(),
-            Project = project,
-            Service = service,
-        });
+        await sqlRepository.CreateAsync(
+            new ProjectServiceStorageElement
+            {
+                Id = Guid.NewGuid(),
+                Project = project,
+                Service = service,
+            }
+        );
     }
 
     public async Task<string[]> ReadAllProjectsAsync(bool includeInactive = false)
     {
         return await sqlRepository
-            .BuildCustomQuery()
-            .WhereIf(!includeInactive, x => !x.IsInactive)
-            .Select(x => x.Project)
-            .Distinct()
-            .OrderBy(x => x)
-            .ToArrayAsync();
+                     .BuildCustomQuery()
+                     .WhereIf(!includeInactive, x => !x.IsInactive)
+                     .Select(x => x.Project)
+                     .Distinct()
+                     .OrderBy(x => x)
+                     .ToArrayAsync();
     }
 
     public async Task<bool> IsProjectExistAsync(string project)
@@ -40,13 +42,13 @@ public class ProjectServiceRepository : IProjectServiceRepository
     public async Task<string[]> ReadAllServicesAsync(string project, bool includeInactive = false)
     {
         return await sqlRepository
-            .BuildCustomQuery()
-            .Where(x => x.Project == project)
-            .WhereIf(!includeInactive, x => !x.IsInactive)
-            .Select(x => x.Service)
-            .Distinct()
-            .OrderBy(x => x)
-            .ToArrayAsync();
+                     .BuildCustomQuery()
+                     .Where(x => x.Project == project)
+                     .WhereIf(!includeInactive, x => !x.IsInactive)
+                     .Select(x => x.Service)
+                     .Distinct()
+                     .OrderBy(x => x)
+                     .ToArrayAsync();
     }
 
     public async Task<bool> IsServiceExistAsync(string project, string service)

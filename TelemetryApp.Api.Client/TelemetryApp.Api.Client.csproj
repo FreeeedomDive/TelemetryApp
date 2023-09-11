@@ -12,12 +12,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-      <PackageReference Include="RestSharp" Version="108.0.3" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.2"/>
+        <PackageReference Include="RestSharp" Version="108.0.3"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\TelemetryApp.Api.Dto\TelemetryApp.Api.Dto.csproj" />
+        <ProjectReference Include="..\TelemetryApp.Api.Dto\TelemetryApp.Api.Dto.csproj"/>
     </ItemGroup>
 
 </Project>

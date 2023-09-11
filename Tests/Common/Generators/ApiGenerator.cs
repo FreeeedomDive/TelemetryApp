@@ -14,16 +14,16 @@ public static class ApiGenerator
         return StatusCodes.SelectRandom();
     }
 
-    public static readonly string[] Methods = new[]
+    public static readonly string[] Methods =
     {
         "GET",
         "POST",
         "PUT",
         "PATCH",
-        "DELETE"
+        "DELETE",
     };
 
-    public static readonly int[] StatusCodes = new[]
+    public static readonly int[] StatusCodes =
     {
         200,
         204,
@@ -32,6 +32,6 @@ public static class ApiGenerator
         403,
         404,
         409,
-        500
+        500,
     };
 }

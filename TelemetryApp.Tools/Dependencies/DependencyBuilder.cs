@@ -12,10 +12,10 @@ public static class DependencyBuilder
     public static StandardKernel Build()
     {
         return new StandardKernel()
-            .ConfigureSettings()
-            .ConfigureElasticClient()
-            .ConfigurePostgreSqlContext()
-            .ConfigureTools();
+               .ConfigureSettings()
+               .ConfigureElasticClient()
+               .ConfigurePostgreSqlContext()
+               .ConfigureTools();
     }
 
     private static StandardKernel ConfigureSettings(this StandardKernel kernel)
@@ -27,7 +27,7 @@ public static class DependencyBuilder
             ConnectionUserName = "",
             ConnectionPassword = "",
             ApplicationName = "",
-            Environment = ""
+            Environment = "",
         };
 
         kernel.Bind<ElasticOptions>().ToConstant(elasticOptions);
@@ -41,7 +41,7 @@ public static class DependencyBuilder
         var clientSettings = new ElasticsearchClientSettings(new Uri(elasticOptions.ConnectionString))
             .Authentication(new BasicAuthentication(elasticOptions.ConnectionUserName, elasticOptions.ConnectionPassword));
         var elasticClient = new ElasticsearchClient(clientSettings);
-        
+
         kernel.Bind<ElasticsearchClient>().ToConstant(elasticClient);
 
         return kernel;
@@ -51,7 +51,7 @@ public static class DependencyBuilder
     {
         // Ensure that you have "TelemetryApp.Tests.ConnectionString" environment variable
         var databaseContext = new DatabaseContext();
-        
+
         kernel.Bind<DatabaseContext>().ToConstant(databaseContext);
 
         return kernel;
@@ -60,9 +60,9 @@ public static class DependencyBuilder
     private static StandardKernel ConfigureTools(this StandardKernel kernel)
     {
         var tools = AppDomain.CurrentDomain.GetAssemblies()
-            .SelectMany(x => x.GetTypes())
-            .Where(x => typeof(ITool).IsAssignableFrom(x) && !x.IsInterface)
-            .ToArray();
+                             .SelectMany(x => x.GetTypes())
+                             .Where(x => typeof(ITool).IsAssignableFrom(x) && !x.IsInterface)
+                             .ToArray();
 
         foreach (var tool in tools)
         {

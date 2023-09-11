@@ -8,17 +8,18 @@ internal static class RestClientBuilder
     {
         var restClientOptions = new RestClientOptions
         {
-            BaseUrl = new Uri(url)
+            BaseUrl = new Uri(url),
         };
         if (!validateSsl)
         {
             restClientOptions.RemoteCertificateValidationCallback = (_, _, _, _) => true;
         }
+
         return new RestClient(restClientOptions);
     }
 
     public static RestClient BuildRestClient(string? customUrl = null)
     {
-        return RestClientBuilder.BuildRestClient(customUrl ?? "https://localhost:6651", false);
+        return BuildRestClient(customUrl ?? "https://localhost:6651", false);
     }
 }

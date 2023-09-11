@@ -29,6 +29,7 @@ public class CompositeApiTelemetryRepository : IApiTelemetryRepository
         return sqlApiTelemetryRepository.FindAsync(filter);
     }
 
-    private readonly SqlApiTelemetryRepository sqlApiTelemetryRepository;
     private readonly ElasticApiTelemetryRepository elasticApiTelemetryRepository;
+
+    private readonly SqlApiTelemetryRepository sqlApiTelemetryRepository;
 }

@@ -3,8 +3,7 @@ using TelemetryApp.Core.ProjectServices.Repository;
 
 namespace TelemetryApp.Api.Controllers;
 
-[ApiController]
-[Route("[controller]")]
+[ApiController, Route("[controller]")]
 public class ProjectsController : Controller
 {
     public ProjectsController(IProjectServiceRepository repository)

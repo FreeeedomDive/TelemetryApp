@@ -7,13 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="FluentAssertions" Version="6.9.0" />
-      <PackageReference Include="NUnit" Version="3.13.3" />
-      <PackageReference Include="RestSharp" Version="108.0.3" />
+        <PackageReference Include="FluentAssertions" Version="6.9.0"/>
+        <PackageReference Include="NUnit" Version="3.13.3"/>
+        <PackageReference Include="RestSharp" Version="108.0.3"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\TelemetryApp.Api.Client\TelemetryApp.Api.Client.csproj" />
+        <ProjectReference Include="..\..\TelemetryApp.Api.Client\TelemetryApp.Api.Client.csproj"/>
     </ItemGroup>
 
 </Project>

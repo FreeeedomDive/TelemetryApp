@@ -5,8 +5,7 @@ using TelemetryApp.Core.ApiTelemetry.Service;
 
 namespace TelemetryApp.Api.Controllers;
 
-[ApiController]
-[Route("[controller]")]
+[ApiController, Route("[controller]")]
 public class ApiTelemetryController : Controller
 {
     public ApiTelemetryController(IApiTelemetryService apiTelemetryService)

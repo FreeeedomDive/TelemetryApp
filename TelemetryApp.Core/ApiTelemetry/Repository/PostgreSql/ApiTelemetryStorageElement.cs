@@ -4,8 +4,7 @@ using SqlRepositoryBase.Core.Models;
 
 namespace TelemetryApp.Core.ApiTelemetry.Repository.PostgreSql;
 
-[PrimaryKey("Id", "Project", "Service")]
-[Index("DateTime")]
+[PrimaryKey("Id", "Project", "Service"), Index("DateTime")]
 public class ApiTelemetryStorageElement : SqlStorageElement
 {
     [Key] public string Project { get; set; }

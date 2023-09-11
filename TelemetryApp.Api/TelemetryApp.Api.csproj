@@ -8,15 +8,15 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.1">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-        <PackageReference Include="Xdd.SqlRepositoryBase.Configuration" Version="1.0.5" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3"/>
+        <PackageReference Include="Xdd.SqlRepositoryBase.Configuration" Version="1.0.5"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\TelemetryApp.Core\TelemetryApp.Core.csproj" />
+        <ProjectReference Include="..\TelemetryApp.Core\TelemetryApp.Core.csproj"/>
     </ItemGroup>
 
 </Project>

@@ -37,7 +37,7 @@ public static class ServiceCollectionExtensions
         }
 
         services.AddSingleton(filter);
-        
+
         // configure read clients
         var logReaderClient = new LogReaderClient(restClient);
         services.AddSingleton<ILogReaderClient>(logReaderClient);

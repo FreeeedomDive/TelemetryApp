@@ -1,4 +1,3 @@
-using System.Text;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using TelemetryApp.Api.Client.Log;
@@ -15,7 +14,8 @@ public class ErrorAlertsWorker : IWorker
         IProjectsClient projectsClient,
         ILogReaderClient logReaderClient,
         Settings.Settings settings,
-        CancellationTokenSource cancellationTokenSource)
+        CancellationTokenSource cancellationTokenSource
+    )
     {
         this.projectsClient = projectsClient;
         this.logReaderClient = logReaderClient;
@@ -46,39 +46,40 @@ public class ErrorAlertsWorker : IWorker
                 var errorsByProject = new Dictionary<string, int>();
                 foreach (var project in projects)
                 {
-                    var errors = await logReaderClient.FindAsync(new LogFilterDto
-                    {
-                        Project = project,
-                        LogLevel = "ERROR",
-                        DateTimeRange = new DateTimeRange
+                    var errors = await logReaderClient.FindAsync(
+                        new LogFilterDto
                         {
-                            From = start,
-                            To = end,
-                        },
-                    });
-                    if (errors.Length == 0)
-                    {
-                        errorsByProject.Add(project, errors.Length);
-                    }
+                            Project = project,
+                            LogLevel = "ERROR",
+                            DateTimeRange = new DateTimeRange
+                            {
+                                From = start,
+                                To = end,
+                            },
+                        }
+                    );
+                    errorsByProject.Add(project, errors.Length);
                 }
 
                 var message = $"Errors from {startDateTimeFormatted} to {endDateTimeFormatted}\n"
-                              + $"{(errorsByProject.Count == 0 ? "No errors" : string.Join("\n", errorsByProject.Select(x => $"{x.Key}: {x.Value}")))}";
+                              + $"{(errorsByProject.Count == 0 ? "No errors" : string.Join("\n", errorsByProject.Where(x => x.Value > 0).Select(x => $"{x.Key}: {x.Value}")))}";
                 await telegramBotClient.SendTextMessageAsync(new ChatId(settings.ChatId), message);
             }
             catch
             {
                 Console.WriteLine($"Iteration at {end} has failed");
             }
+
             start = end;
         }
     }
 
-    private readonly IProjectsClient projectsClient;
-    private readonly ILogReaderClient logReaderClient;
-    private readonly ITelegramBotClient telegramBotClient;
-    private readonly Settings.Settings settings;
     private readonly CancellationTokenSource cancellationTokenSource;
+    private readonly ILogReaderClient logReaderClient;
+
+    private readonly IProjectsClient projectsClient;
+    private readonly Settings.Settings settings;
+    private readonly ITelegramBotClient telegramBotClient;
     private readonly PeriodicTimer timer;
     private Task workerTask;
 }

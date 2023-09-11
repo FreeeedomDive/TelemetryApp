@@ -8,12 +8,13 @@ public static class RestClientBuilder
     {
         var restClientOptions = new RestClientOptions
         {
-            BaseUrl = new Uri(url)
+            BaseUrl = new Uri(url),
         };
         if (!validateSsl)
         {
             restClientOptions.RemoteCertificateValidationCallback = (_, _, _, _) => true;
         }
+
         return new RestClient(restClientOptions);
     }
 }

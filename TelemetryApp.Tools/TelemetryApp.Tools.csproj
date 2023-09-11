@@ -8,12 +8,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\TelemetryApp.Core\TelemetryApp.Core.csproj" />
+        <ProjectReference Include="..\TelemetryApp.Core\TelemetryApp.Core.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Ninject" Version="3.3.6" />
-      <PackageReference Include="Xdd.SqlRepositoryBase.Core" Version="1.0.6" />
+        <PackageReference Include="Ninject" Version="3.3.6"/>
+        <PackageReference Include="Xdd.SqlRepositoryBase.Core" Version="1.0.6"/>
     </ItemGroup>
 
 </Project>

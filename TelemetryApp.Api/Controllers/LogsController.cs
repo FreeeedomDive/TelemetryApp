@@ -5,15 +5,14 @@ using TelemetryApp.Core.Logs.Service;
 
 namespace TelemetryApp.Api.Controllers;
 
-[ApiController]
-[Route("[controller]")]
+[ApiController, Route("[controller]")]
 public class LogsController : Controller
 {
     public LogsController(ILogService logService)
     {
         this.logService = logService;
     }
-    
+
     [HttpPost("create")]
     public async Task<ActionResult> Create([FromBody] LogDto logDto)
     {
@@ -26,6 +25,6 @@ public class LogsController : Controller
     {
         return await logService.FindAsync(filter);
     }
-    
+
     private readonly ILogService logService;
 }

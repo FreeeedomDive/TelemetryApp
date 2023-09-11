@@ -5,7 +5,6 @@ using TelemetryApp.Api.Dto.ApiTelemetry;
 using TelemetryApp.Api.Dto.ApiTelemetry.Filter;
 using TelemetryApp.Core.Elastic;
 using TelemetryApp.Core.Extensions;
-using TelemetryApp.Core.Logs.Repository.Elastic;
 
 namespace TelemetryApp.Core.ApiTelemetry.Repository.Elastic;
 
@@ -39,10 +38,10 @@ public class ElasticApiTelemetryRepository : IApiTelemetryRepository
     public async Task<ApiTelemetryDto[]> FindAsync(ApiRequestInfoFilterDto filter)
     {
         var searchDescriptor = new SearchRequestDescriptor<ElasticApiTelemetryStorageElement>()
-            .Index(index)
-            .Size(10000)
-            .GetQueries(filter)
-            .Sort(descriptor => descriptor.Field(l => l.DateTime, sortDescriptor => sortDescriptor.Order(SortOrder.Desc)));
+                               .Index(index)
+                               .Size(10000)
+                               .GetQueries(filter)
+                               .Sort(descriptor => descriptor.Field(l => l.DateTime, sortDescriptor => sortDescriptor.Order(SortOrder.Desc)));
         var response = await elasticsearchClient.SearchAsync(searchDescriptor);
 
         return response.IsSuccess()
@@ -61,7 +60,7 @@ public class ElasticApiTelemetryRepository : IApiTelemetryRepository
             RouteParametersValues = storageElement.RouteParametersValues,
             StatusCode = storageElement.StatusCode,
             ExecutionTime = storageElement.ExecutionTime,
-            DateTime = storageElement.DateTime
+            DateTime = storageElement.DateTime,
         };
     }
 
@@ -77,10 +76,11 @@ public class ElasticApiTelemetryRepository : IApiTelemetryRepository
             RouteParametersValues = dto.RouteParametersValues,
             StatusCode = dto.StatusCode,
             ExecutionTime = dto.ExecutionTime,
-            DateTime = dto.DateTime ?? DateTime.UtcNow
+            DateTime = dto.DateTime ?? DateTime.UtcNow,
         };
     }
 
-    private readonly string index;
     private readonly ElasticsearchClient elasticsearchClient;
+
+    private readonly string index;
 }

@@ -52,9 +52,10 @@ public class EventsMonitoringWorker : IWorker
         );
     }
 
-    private readonly ITelegramBotClient telegramBotClient;
+    private readonly CancellationTokenSource cancellationTokenSource;
     private readonly IDockerClient dockerClient;
     private readonly ILoggerClient logger;
     private readonly Settings.Settings settings;
-    private readonly CancellationTokenSource cancellationTokenSource;
+
+    private readonly ITelegramBotClient telegramBotClient;
 }

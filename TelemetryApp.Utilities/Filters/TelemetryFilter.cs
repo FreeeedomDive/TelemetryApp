@@ -4,12 +4,6 @@ namespace TelemetryApp.Utilities.Filters;
 
 public class TelemetryFilter
 {
-    public string[] AllowedMethods { get; set; } = Array.Empty<string>();
-    public string[] AllowedRoutes { get; set; } = Array.Empty<string>();
-    
-    public string[] ForbiddenMethods { get; set; } = Array.Empty<string>();
-    public string[] ForbiddenRoutes { get; set; } = Array.Empty<string>();
-
     public bool Filter(string method, string route)
     {
         return FilterMethod(method) || FilterRoute(route);
@@ -52,6 +46,12 @@ public class TelemetryFilter
         forbiddenMethods = new HashSet<string>(ForbiddenMethods);
         forbiddenRoutes = new HashSet<string>(ForbiddenRoutes);
     }
+
+    public string[] AllowedMethods { get; set; } = Array.Empty<string>();
+    public string[] AllowedRoutes { get; set; } = Array.Empty<string>();
+
+    public string[] ForbiddenMethods { get; set; } = Array.Empty<string>();
+    public string[] ForbiddenRoutes { get; set; } = Array.Empty<string>();
 
     private HashSet<string> allowedMethods = new();
     private HashSet<string> allowedRoutes = new();

@@ -19,8 +19,6 @@ namespace TelemetryApp.Api;
 
 public class Startup
 {
-    public IConfiguration Configuration { get; }
-
     public Startup(IConfiguration configuration)
     {
         Configuration = configuration;
@@ -37,13 +35,15 @@ public class Startup
 
         services.ConfigurePostgreSql();
 
-        services.AddSingleton<ElasticsearchClient>(provider =>
-        {
-            var options = provider.GetService<IOptions<ElasticOptions>>()!.Value;
-            var settings = new ElasticsearchClientSettings(new Uri(options.ConnectionString))
-                .Authentication(new BasicAuthentication(options.ConnectionUserName, options.ConnectionPassword));
-            return new ElasticsearchClient(settings);
-        });
+        services.AddSingleton<ElasticsearchClient>(
+            provider =>
+            {
+                var options = provider.GetService<IOptions<ElasticOptions>>()!.Value;
+                var settings = new ElasticsearchClientSettings(new Uri(options.ConnectionString))
+                    .Authentication(new BasicAuthentication(options.ConnectionUserName, options.ConnectionPassword));
+                return new ElasticsearchClient(settings);
+            }
+        );
 
         services.AddTransient<IProjectServiceRepository, ProjectServiceRepository>();
         services.AddTransient<SqlApiTelemetryRepository>();
@@ -56,11 +56,15 @@ public class Startup
         services.AddTransient<IApiTelemetryService, ApiTelemetryService>();
         services.AddTransient<ILogService, LogService>();
 
-        services.AddCors(options =>
-        {
-            options.AddPolicy(CorsConfigurationName,
-                policy => { policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod(); });
-        }); 
+        services.AddCors(
+            options =>
+            {
+                options.AddPolicy(
+                    CorsConfigurationName,
+                    policy => { policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod(); }
+                );
+            }
+        );
 
         services.AddControllers();
     }
@@ -74,6 +78,8 @@ public class Startup
         app.UseWebSockets();
         app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
     }
+
+    public IConfiguration Configuration { get; }
 
     private const string CorsConfigurationName = "AllowOrigins";
 }

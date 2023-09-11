@@ -43,7 +43,7 @@ public class ErrorAlertsWorker : IWorker
             try
             {
                 var projects = await projectsClient.ReadProjectsAsync();
-                var messageBuilder = new StringBuilder().Append($"Errors from {startDateTimeFormatted} to {endDateTimeFormatted}").AppendLine();
+                var errorsByProject = new Dictionary<string, int>();
                 foreach (var project in projects)
                 {
                     var errors = await logReaderClient.FindAsync(new LogFilterDto
@@ -58,12 +58,13 @@ public class ErrorAlertsWorker : IWorker
                     });
                     if (errors.Length == 0)
                     {
-                        continue;
+                        errorsByProject.Add(project, errors.Length);
                     }
-                    messageBuilder.Append(project).Append(": ").Append(errors.Length).AppendLine();
                 }
 
-                await telegramBotClient.SendTextMessageAsync(new ChatId(settings.ChatId), messageBuilder.ToString());
+                var message = $"Errors from {startDateTimeFormatted} to {endDateTimeFormatted}\n"
+                              + $"{(errorsByProject.Count == 0 ? "No errors" : string.Join("\n", errorsByProject.Select(x => $"{x.Key}: {x.Value}")))}";
+                await telegramBotClient.SendTextMessageAsync(new ChatId(settings.ChatId), message);
             }
             catch
             {

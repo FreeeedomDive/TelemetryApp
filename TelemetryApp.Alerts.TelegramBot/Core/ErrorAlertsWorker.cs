@@ -61,8 +61,12 @@ public class ErrorAlertsWorker : IWorker
                     errorsByProject.Add(project, errors.Length);
                 }
 
+                var projectsWithErrors = errorsByProject
+                                         .Where(x => x.Value > 0)
+                                         .Select(x => $"{x.Key}: {x.Value}")
+                                         .ToArray();
                 var message = $"Errors from {startDateTimeFormatted} to {endDateTimeFormatted}\n"
-                              + $"{(errorsByProject.Count == 0 ? "No errors" : string.Join("\n", errorsByProject.Where(x => x.Value > 0).Select(x => $"{x.Key}: {x.Value}")))}";
+                              + $"{(projectsWithErrors.Length == 0 ? "No errors" : string.Join("\n", projectsWithErrors))}";
                 await telegramBotClient.SendTextMessageAsync(new ChatId(settings.ChatId), message);
             }
             catch

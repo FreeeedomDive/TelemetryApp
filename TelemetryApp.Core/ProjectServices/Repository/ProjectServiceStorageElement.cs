@@ -8,4 +8,5 @@ public class ProjectServiceStorageElement : SqlStorageElement
 {
     public string Project { get; set; }
     public string Service { get; set; }
+    public bool IsInactive { get; set; }
 }

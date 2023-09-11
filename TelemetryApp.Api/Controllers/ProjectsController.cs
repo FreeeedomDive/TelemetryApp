@@ -5,7 +5,7 @@ namespace TelemetryApp.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class ProjectsController
+public class ProjectsController : Controller
 {
     public ProjectsController(IProjectServiceRepository repository)
     {
@@ -13,15 +13,15 @@ public class ProjectsController
     }
 
     [HttpGet]
-    public async Task<ActionResult<string[]>> ReadProjects()
+    public async Task<ActionResult<string[]>> ReadProjects([FromQuery] bool includeInactive = false)
     {
-        return await repository.ReadAllProjectsAsync();
+        return await repository.ReadAllProjectsAsync(includeInactive);
     }
 
     [HttpGet("{project}/Services")]
-    public async Task<ActionResult<string[]>> ReadServices(string project)
+    public async Task<ActionResult<string[]>> ReadServices([FromRoute] string project, [FromQuery] bool includeInactive = false)
     {
-        return await repository.ReadAllServicesAsync(project);
+        return await repository.ReadAllServicesAsync(project, includeInactive);
     }
 
     private readonly IProjectServiceRepository repository;

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using SqlRepositoryBase.Core.Extensions;
 using SqlRepositoryBase.Core.Repository;
 
 namespace TelemetryApp.Core.ProjectServices.Repository;
@@ -16,14 +17,15 @@ public class ProjectServiceRepository : IProjectServiceRepository
         {
             Id = Guid.NewGuid(),
             Project = project,
-            Service = service
+            Service = service,
         });
     }
 
-    public async Task<string[]> ReadAllProjectsAsync()
+    public async Task<string[]> ReadAllProjectsAsync(bool includeInactive = false)
     {
         return await sqlRepository
             .BuildCustomQuery()
+            .WhereIf(!includeInactive, x => !x.IsInactive)
             .Select(x => x.Project)
             .Distinct()
             .OrderBy(x => x)
@@ -35,11 +37,12 @@ public class ProjectServiceRepository : IProjectServiceRepository
         return await sqlRepository.BuildCustomQuery().AnyAsync(x => x.Project == project);
     }
 
-    public async Task<string[]> ReadAllServicesAsync(string project)
+    public async Task<string[]> ReadAllServicesAsync(string project, bool includeInactive = false)
     {
         return await sqlRepository
             .BuildCustomQuery()
             .Where(x => x.Project == project)
+            .WhereIf(!includeInactive, x => !x.IsInactive)
             .Select(x => x.Service)
             .Distinct()
             .OrderBy(x => x)

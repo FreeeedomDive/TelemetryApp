@@ -48,10 +48,10 @@ public class Startup
         services.AddTransient<IProjectServiceRepository, ProjectServiceRepository>();
         services.AddTransient<SqlApiTelemetryRepository>();
         services.AddTransient<ElasticApiTelemetryRepository>();
-        services.AddTransient<IApiTelemetryRepository, CompositeApiTelemetryRepository>();
+        services.AddTransient<IApiTelemetryRepository, SqlApiTelemetryRepository>();
         services.AddTransient<SqlLogRepository>();
         services.AddTransient<ElasticLogRepository>();
-        services.AddTransient<ILogRepository, CompositeLogRepository>();
+        services.AddTransient<ILogRepository, SqlLogRepository>();
 
         services.AddTransient<IApiTelemetryService, ApiTelemetryService>();
         services.AddTransient<ILogService, LogService>();
